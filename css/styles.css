@@ -1,0 +1,20 @@
+.GridContainer {
+  display: grid;
+  grid-template-columns: repeat(8, 80px);
+  grid-template-rows: repeat(8, 80px);
+
+  border: 2px solid black;
+}
+
+.Square {
+  width: 100%;
+  height: 100%;
+}
+
+.Square--Light {
+  background-color: #f0d9b5;
+}
+
+.Square--Dark {
+  background-color: #b58863;
+}
