@@ -87,5 +87,19 @@ for (let i = 0; i < 64; i++) {
     square.appendChild(img);
   }
 
+  let selectedSquareIndex = null;
+
+  square.addEventListener("click", () => {
+    selectedSquareIndex = i;
+
+    const piece = board[i];
+
+    if (!piece) return;
+
+    if (selectedSquareIndex === i) {
+      square.classList.add("Square--Selected");
+    }
+  });
+
   gridContainer.appendChild(square);
 }

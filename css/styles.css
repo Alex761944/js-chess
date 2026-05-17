@@ -22,6 +22,11 @@
 .Square--Dark {
   background-color: #b58863;
 }
+
+.Square--Selected {
+  background-color: red;
+}
+
 .Square img {
   width: 70%;
   height: 70%;
