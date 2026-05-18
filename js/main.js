@@ -110,6 +110,7 @@ function handleSquareClick(imageElement) {
     ACTIVE_PIECE.classList.add("Square--Selected");
   } else {
     // Here is the code when a piece is selected, move it to the square.
+
     imageElement.appendChild(ACTIVE_PIECE);
   }
 }
