@@ -1,5 +1,7 @@
 const gridContainer = document.querySelector(".GridContainer");
 
+let ACTIVE_PIECE = null;
+
 const pieces = {
   dark: {
     king: "./img/king_dark.png",
@@ -66,6 +68,7 @@ const board = [
   createPiece("rook", "light"),
 ];
 
+// Create initial board
 for (let i = 0; i < 64; i++) {
   const square = document.createElement("div");
 
@@ -84,22 +87,29 @@ for (let i = 0; i < 64; i++) {
 
     img.src = pieces[piece.color][piece.type];
 
+    img.setAttribute("data-type", board[i].type);
+    img.setAttribute("data-color", board[i].color);
+
     square.appendChild(img);
   }
 
-  let selectedSquareIndex = null;
-
-  square.addEventListener("click", () => {
-    selectedSquareIndex = i;
-
-    const piece = board[i];
-
-    if (!piece) return;
-
-    if (selectedSquareIndex === i) {
-      square.classList.add("Square--Selected");
-    }
+  square.addEventListener("click", (event) => {
+    handleSquareClick(event.target);
   });
 
   gridContainer.appendChild(square);
+}
+
+function handleSquareClick(imageElement) {
+  // Select piece
+  if (!ACTIVE_PIECE) {
+    if (!imageElement.hasAttribute("data-type")) return;
+
+    ACTIVE_PIECE = imageElement;
+
+    ACTIVE_PIECE.classList.add("Square--Selected");
+  } else {
+    // Here is the code when a piece is selected, move it to the square.
+    imageElement.appendChild(ACTIVE_PIECE);
+  }
 }
