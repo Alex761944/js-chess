@@ -1,7 +1,10 @@
 class Game {
   constructor() {
+    this.handleSquareClick = this.handleSquareClick.bind(this);
+
     this.createBoard();
     this.placePieces();
+    this.squareClick();
   }
 
   createBoard() {
@@ -71,8 +74,31 @@ class Game {
     new Piece("pawn", "light", "h", "2");
   }
 
+  squareClick() {
+    this.squareElements.forEach((squareElement) => {
+      squareElement.addEventListener("click", this.handleSquareClick);
+    });
+  }
+
+  handleSquareClick(event) {
+    const squareElement = event.currentTarget;
+    const pieceElement = squareElement.querySelector(".Piece");
+
+    if (!pieceElement) return;
+
+    this.squareElements.forEach((squareElement) => {
+      squareElement.classList.remove("Square--Selected");
+    });
+
+    squareElement.classList.add("Square--Selected");
+  }
+
   get boardElement() {
     return document.querySelector(".Board");
+  }
+
+  get squareElements() {
+    return document.querySelectorAll(".Square");
   }
 }
 
