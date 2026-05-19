@@ -1,6 +1,109 @@
-const gridContainer = document.querySelector(".GridContainer");
+class Game {
+  constructor() {
+    this.createBoard();
+    this.placePieces();
+  }
 
-let ACTIVE_PIECE = null;
+  createBoard() {
+    let rank = 9;
+    const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+
+    for (let i = 0; i < 64; i++) {
+      const square = document.createElement("div");
+
+      const row = Math.floor(i / 8);
+      const col = i % 8;
+
+      const isDark = (row + col) % 2 === 1;
+
+      square.classList.add("Square");
+      square.classList.add(isDark ? "Square--Dark" : "Square--Light");
+
+      if (i % 8 === 0) {
+        rank--;
+      }
+
+      square.setAttribute("data-rank", rank);
+
+      const file = files[col];
+
+      square.setAttribute("data-file", file);
+
+      this.boardElement.appendChild(square);
+    }
+  }
+
+  placePieces() {
+    new Piece("rook", "dark", "a", "8");
+    new Piece("knight", "dark", "b", "8");
+    new Piece("bishop", "dark", "c", "8");
+    new Piece("queen", "dark", "d", "8");
+    new Piece("king", "dark", "e", "8");
+    new Piece("bishop", "dark", "f", "8");
+    new Piece("knight", "dark", "g", "8");
+    new Piece("rook", "dark", "h", "8");
+
+    new Piece("pawn", "dark", "a", "7");
+    new Piece("pawn", "dark", "b", "7");
+    new Piece("pawn", "dark", "c", "7");
+    new Piece("pawn", "dark", "d", "7");
+    new Piece("pawn", "dark", "e", "7");
+    new Piece("pawn", "dark", "f", "7");
+    new Piece("pawn", "dark", "g", "7");
+    new Piece("pawn", "dark", "h", "7");
+
+    new Piece("rook", "light", "a", "1");
+    new Piece("knight", "light", "b", "1");
+    new Piece("bishop", "light", "c", "1");
+    new Piece("queen", "light", "d", "1");
+    new Piece("king", "light", "e", "1");
+    new Piece("bishop", "light", "f", "1");
+    new Piece("knight", "light", "g", "1");
+    new Piece("rook", "light", "h", "1");
+
+    new Piece("pawn", "light", "a", "2");
+    new Piece("pawn", "light", "b", "2");
+    new Piece("pawn", "light", "c", "2");
+    new Piece("pawn", "light", "d", "2");
+    new Piece("pawn", "light", "e", "2");
+    new Piece("pawn", "light", "f", "2");
+    new Piece("pawn", "light", "g", "2");
+    new Piece("pawn", "light", "h", "2");
+  }
+
+  get boardElement() {
+    return document.querySelector(".Board");
+  }
+}
+
+class Piece {
+  constructor(type, color, file, rank) {
+    this.type = type;
+    this.color = color;
+    this.file = file;
+    this.rank = rank;
+
+    this.hasMoved = false;
+
+    this.renderPiece();
+  }
+
+  renderPiece() {
+    const pieceElement = document.createElement("img");
+
+    pieceElement.classList.add("Piece");
+
+    pieceElement.src = pieces[this.color][this.type];
+
+    const squareElement = document.querySelector(
+      `[data-file="${this.file}"][data-rank="${this.rank}"]`,
+    );
+
+    squareElement.appendChild(pieceElement);
+  }
+
+  goTo(file, rank) {}
+}
 
 const pieces = {
   dark: {
@@ -22,98 +125,4 @@ const pieces = {
   },
 };
 
-const createPiece = (type, color) => ({
-  type,
-  color,
-  hasMoved: false,
-});
-
-const board = [
-  createPiece("rook", "dark"),
-  createPiece("knight", "dark"),
-  createPiece("bishop", "dark"),
-  createPiece("queen", "dark"),
-  createPiece("king", "dark"),
-  createPiece("bishop", "dark"),
-  createPiece("knight", "dark"),
-  createPiece("rook", "dark"),
-
-  createPiece("pawn", "dark"),
-  createPiece("pawn", "dark"),
-  createPiece("pawn", "dark"),
-  createPiece("pawn", "dark"),
-  createPiece("pawn", "dark"),
-  createPiece("pawn", "dark"),
-  createPiece("pawn", "dark"),
-  createPiece("pawn", "dark"),
-
-  ...Array(32).fill(null),
-
-  createPiece("pawn", "light"),
-  createPiece("pawn", "light"),
-  createPiece("pawn", "light"),
-  createPiece("pawn", "light"),
-  createPiece("pawn", "light"),
-  createPiece("pawn", "light"),
-  createPiece("pawn", "light"),
-  createPiece("pawn", "light"),
-
-  createPiece("rook", "light"),
-  createPiece("knight", "light"),
-  createPiece("bishop", "light"),
-  createPiece("queen", "light"),
-  createPiece("king", "light"),
-  createPiece("bishop", "light"),
-  createPiece("knight", "light"),
-  createPiece("rook", "light"),
-];
-
-// Create initial board
-for (let i = 0; i < 64; i++) {
-  const square = document.createElement("div");
-
-  const row = Math.floor(i / 8);
-  const col = i % 8;
-
-  const isDark = (row + col) % 2 === 1;
-
-  square.classList.add("Square");
-  square.classList.add(isDark ? "Square--Dark" : "Square--Light");
-
-  const piece = board[i];
-
-  if (piece) {
-    const img = document.createElement("img");
-
-    img.src = pieces[piece.color][piece.type];
-
-    img.setAttribute("data-type", board[i].type);
-    img.setAttribute("data-color", board[i].color);
-
-    square.appendChild(img);
-  }
-
-  square.addEventListener("click", (event) => {
-    handleSquareClick(event.target);
-  });
-
-  gridContainer.appendChild(square);
-}
-
-function handleSquareClick(imageElement) {
-  // Select piece
-  if (!ACTIVE_PIECE) {
-    if (!imageElement.hasAttribute("data-type")) return;
-
-    ACTIVE_PIECE = imageElement;
-
-    ACTIVE_PIECE.classList.add("Square--Selected");
-  } else {
-    // Here is the code when a piece is selected, move it to the square.
-    imageElement.appendChild(ACTIVE_PIECE);
-
-    ACTIVE_PIECE.classList.remove("Square--Selected");
-
-    ACTIVE_PIECE = null;
-  }
-}
+new Game();
