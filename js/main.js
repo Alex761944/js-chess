@@ -2,6 +2,8 @@ class Game {
   constructor() {
     this.handleSquareClick = this.handleSquareClick.bind(this);
 
+    this.activePiece = null;
+
     this.createBoard();
     this.placePieces();
     this.squareClick();
@@ -84,13 +86,21 @@ class Game {
     const squareElement = event.currentTarget;
     const pieceElement = squareElement.querySelector(".Piece");
 
-    if (!pieceElement) return;
+    if (!pieceElement && !this.activePiece) return;
 
-    this.squareElements.forEach((squareElement) => {
-      squareElement.classList.remove("Square--Selected");
-    });
+    if (!this.activePiece) {
+      squareElement.classList.add("Square--Selected");
 
-    squareElement.classList.add("Square--Selected");
+      this.activePiece = pieceElement;
+    } else {
+      squareElement.appendChild(this.activePiece);
+
+      this.squareElements.forEach((squareElement) => {
+        squareElement.classList.remove("Square--Selected");
+      });
+
+      this.activePiece = null;
+    }
   }
 
   get boardElement() {
@@ -119,7 +129,7 @@ class Piece {
 
     pieceElement.classList.add("Piece");
 
-    pieceElement.src = pieces[this.color][this.type];
+    pieceElement.src = `./img/${this.type}_${this.color}.png`;
 
     const squareElement = document.querySelector(
       `[data-file="${this.file}"][data-rank="${this.rank}"]`,
@@ -130,25 +140,5 @@ class Piece {
 
   goTo(file, rank) {}
 }
-
-const pieces = {
-  dark: {
-    king: "./img/king_dark.png",
-    queen: "./img/queen_dark.png",
-    rook: "./img/rook_dark.png",
-    bishop: "./img/bishop_dark.png",
-    knight: "./img/knight_dark.png",
-    pawn: "./img/pawn_dark.png",
-  },
-
-  light: {
-    king: "./img/king_light.png",
-    queen: "./img/queen_light.png",
-    rook: "./img/rook_light.png",
-    bishop: "./img/bishop_light.png",
-    knight: "./img/knight_light.png",
-    pawn: "./img/pawn_light.png",
-  },
-};
 
 new Game();
