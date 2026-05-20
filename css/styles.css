@@ -24,7 +24,11 @@
 }
 
 .Square--Selected {
-  background-color: red;
+  background-color: lightblue;
+}
+
+.Square--Valid {
+  background-color: lightcoral;
 }
 
 .Square img {

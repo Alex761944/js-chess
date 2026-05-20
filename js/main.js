@@ -5,6 +5,8 @@ class Game {
     this.activePiece = null;
     this.currentPlayer = "light";
 
+    this.pieces = [];
+
     this.createBoard();
     this.placePieces();
     this.squareClick();
@@ -40,41 +42,43 @@ class Game {
   }
 
   placePieces() {
-    new Piece("rook", "dark", "a", "8");
-    new Piece("knight", "dark", "b", "8");
-    new Piece("bishop", "dark", "c", "8");
-    new Piece("queen", "dark", "d", "8");
-    new Piece("king", "dark", "e", "8");
-    new Piece("bishop", "dark", "f", "8");
-    new Piece("knight", "dark", "g", "8");
-    new Piece("rook", "dark", "h", "8");
+    this.pieces = [
+      new Piece("rook", "dark", "a", "8"),
+      new Piece("knight", "dark", "b", "8"),
+      new Piece("bishop", "dark", "c", "8"),
+      new Piece("queen", "dark", "d", "8"),
+      new Piece("king", "dark", "e", "8"),
+      new Piece("bishop", "dark", "f", "8"),
+      new Piece("knight", "dark", "g", "8"),
+      new Piece("rook", "dark", "h", "8"),
 
-    new Piece("pawn", "dark", "a", "7");
-    new Piece("pawn", "dark", "b", "7");
-    new Piece("pawn", "dark", "c", "7");
-    new Piece("pawn", "dark", "d", "7");
-    new Piece("pawn", "dark", "e", "7");
-    new Piece("pawn", "dark", "f", "7");
-    new Piece("pawn", "dark", "g", "7");
-    new Piece("pawn", "dark", "h", "7");
+      new Piece("pawn", "dark", "a", "7"),
+      new Piece("pawn", "dark", "b", "7"),
+      new Piece("pawn", "dark", "c", "7"),
+      new Piece("pawn", "dark", "d", "7"),
+      new Piece("pawn", "dark", "e", "7"),
+      new Piece("pawn", "dark", "f", "7"),
+      new Piece("pawn", "dark", "g", "7"),
+      new Piece("pawn", "dark", "h", "7"),
 
-    new Piece("rook", "light", "a", "1");
-    new Piece("knight", "light", "b", "1");
-    new Piece("bishop", "light", "c", "1");
-    new Piece("queen", "light", "d", "1");
-    new Piece("king", "light", "e", "1");
-    new Piece("bishop", "light", "f", "1");
-    new Piece("knight", "light", "g", "1");
-    new Piece("rook", "light", "h", "1");
+      new Piece("rook", "light", "a", "1"),
+      new Piece("knight", "light", "b", "1"),
+      new Piece("bishop", "light", "c", "1"),
+      new Piece("queen", "light", "d", "1"),
+      new Piece("king", "light", "e", "1"),
+      new Piece("bishop", "light", "f", "1"),
+      new Piece("knight", "light", "g", "1"),
+      new Piece("rook", "light", "h", "1"),
 
-    new Piece("pawn", "light", "a", "2");
-    new Piece("pawn", "light", "b", "2");
-    new Piece("pawn", "light", "c", "2");
-    new Piece("pawn", "light", "d", "2");
-    new Piece("pawn", "light", "e", "2");
-    new Piece("pawn", "light", "f", "2");
-    new Piece("pawn", "light", "g", "2");
-    new Piece("pawn", "light", "h", "2");
+      new Piece("pawn", "light", "a", "2"),
+      new Piece("pawn", "light", "b", "2"),
+      new Piece("pawn", "light", "c", "2"),
+      new Piece("pawn", "light", "d", "2"),
+      new Piece("pawn", "light", "e", "2"),
+      new Piece("pawn", "light", "f", "2"),
+      new Piece("pawn", "light", "g", "2"),
+      new Piece("pawn", "light", "h", "2"),
+    ];
   }
 
   squareClick() {
@@ -85,20 +89,20 @@ class Game {
 
   handleSquareClick(event) {
     const squareElement = event.currentTarget;
-    const pieceElement = squareElement.querySelector(".Piece");
 
-    if (!pieceElement && !this.activePiece) return;
+    const file = squareElement.dataset.file;
+    const rank = squareElement.dataset.rank;
 
     if (!this.activePiece) {
-      if (pieceElement.dataset.color !== this.currentPlayer) return;
-
-      squareElement.classList.add("Square--Selected");
-
-      this.activePiece = pieceElement;
-
-      return;
+      this.activePiece = this.pieces.find((piece) => {
+        return (
+          piece.file === file &&
+          piece.rank === rank &&
+          piece.color === this.currentPlayer
+        );
+      });
     } else {
-      squareElement.appendChild(this.activePiece);
+      this.activePiece.goTo(file, rank);
 
       this.squareElements.forEach((squareElement) => {
         squareElement.classList.remove("Square--Selected");
@@ -107,6 +111,20 @@ class Game {
       this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
 
       this.activePiece = null;
+    }
+
+    if (this.activePiece) {
+      squareElement.classList.add("Square--Selected");
+
+      const validSquares = this.activePiece.getValidSquares();
+
+      this.squareElements.forEach((square) => {
+        if (validSquares.includes(square)) {
+          square.classList.add("Square--Valid");
+        } else {
+          square.classList.remove("Square--Valid");
+        }
+      });
     }
   }
 
@@ -129,6 +147,7 @@ class Piece {
     this.hasMoved = false;
 
     this.renderPiece();
+    this.getValidSquares();
   }
 
   renderPiece() {
@@ -148,7 +167,45 @@ class Piece {
     squareElement.appendChild(pieceElement);
   }
 
-  goTo(file, rank) {}
+  goTo(file, rank) {
+    const targetSquare = document.querySelector(
+      `.Square[data-file="${file}"][data-rank="${rank}"]`,
+    );
+
+    targetSquare.appendChild(this.domElement);
+
+    if (!this.hasMoved) this.hasMoved = true;
+  }
+
+  getValidSquares() {
+    const validSquares = [];
+
+    if (this.type === "pawn" && this.color === "light") {
+      validSquares.push(
+        document.querySelector(
+          `.Square[data-rank="${parseInt(this.rank) + 1}"][data-file="${this.file}"]`,
+        ),
+      );
+
+      if (!this.hasMoved) {
+        validSquares.push(
+          document.querySelector(
+            `.Square[data-rank="${parseInt(this.rank) + 2}"][data-file="${this.file}"]`,
+          ),
+        );
+      }
+    }
+
+    return validSquares.filter((validSquare) => {
+      return validSquare != null;
+    });
+  }
+
+  get domElement() {
+    return document.querySelector(
+      `.Square[data-rank="${this.rank}"][data-file="${this.file}"] .Piece`,
+    );
+  }
 }
 
 new Game();
