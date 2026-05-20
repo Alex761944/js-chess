@@ -3,6 +3,7 @@ class Game {
     this.handleSquareClick = this.handleSquareClick.bind(this);
 
     this.activePiece = null;
+    this.currentPlayer = "light";
 
     this.createBoard();
     this.placePieces();
@@ -89,15 +90,21 @@ class Game {
     if (!pieceElement && !this.activePiece) return;
 
     if (!this.activePiece) {
+      if (pieceElement.dataset.color !== this.currentPlayer) return;
+
       squareElement.classList.add("Square--Selected");
 
       this.activePiece = pieceElement;
+
+      return;
     } else {
       squareElement.appendChild(this.activePiece);
 
       this.squareElements.forEach((squareElement) => {
         squareElement.classList.remove("Square--Selected");
       });
+
+      this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
 
       this.activePiece = null;
     }
@@ -130,6 +137,9 @@ class Piece {
     pieceElement.classList.add("Piece");
 
     pieceElement.src = `./img/${this.type}_${this.color}.png`;
+
+    pieceElement.dataset.type = this.type;
+    pieceElement.dataset.color = this.color;
 
     const squareElement = document.querySelector(
       `[data-file="${this.file}"][data-rank="${this.rank}"]`,
