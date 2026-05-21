@@ -125,6 +125,10 @@ class Game {
         this.activePiece.goTo(file, rank);
 
         this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
+
+        document.querySelector(".CurrentPlayerIndicator p").textContent =
+          this.currentPlayer.charAt(0).toUpperCase() +
+          this.currentPlayer.slice(1);
       }
 
       this.squareElements.forEach((squareElement) => {

@@ -1,4 +1,12 @@
+p {
+  margin: 0;
+}
+
 .CurrentPlayerIndicator {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  width: 720px;
   color: white;
 }
 
@@ -33,11 +41,6 @@
 
   width: 80px;
   height: 80px;
-}
-
-.Ranks p,
-.File p {
-  margin: 0;
 }
 
 .Files {
