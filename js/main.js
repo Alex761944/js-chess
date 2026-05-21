@@ -1,3 +1,4 @@
+const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 class Game {
   constructor() {
     this.handleSquareClick = this.handleSquareClick.bind(this);
@@ -78,6 +79,10 @@ class Game {
       new Piece("pawn", "light", "f", "2"),
       new Piece("pawn", "light", "g", "2"),
       new Piece("pawn", "light", "h", "2"),
+
+      // Testing
+      new Piece("pawn", "dark", "a", "3"),
+      new Piece("pawn", "dark", "c", "3"),
     ];
   }
 
@@ -89,6 +94,11 @@ class Game {
 
   handleSquareClick(event) {
     const squareElement = event.currentTarget;
+
+    // Reset valid squares
+    this.squareElements.forEach((square) => {
+      square.classList.remove("Square--Valid");
+    });
 
     const file = squareElement.dataset.file;
     const rank = squareElement.dataset.rank;
@@ -102,13 +112,24 @@ class Game {
         );
       });
     } else {
-      this.activePiece.goTo(file, rank);
+      const validSquares = this.activePiece.getValidSquares();
+
+      if (
+        validSquares.find((validSquare) => {
+          return (
+            validSquare.dataset.rank === rank &&
+            validSquare.dataset.file === file
+          );
+        })
+      ) {
+        this.activePiece.goTo(file, rank);
+
+        this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
+      }
 
       this.squareElements.forEach((squareElement) => {
         squareElement.classList.remove("Square--Selected");
       });
-
-      this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
 
       this.activePiece = null;
     }
@@ -121,8 +142,6 @@ class Game {
       this.squareElements.forEach((square) => {
         if (validSquares.includes(square)) {
           square.classList.add("Square--Valid");
-        } else {
-          square.classList.remove("Square--Valid");
         }
       });
     }
@@ -147,7 +166,6 @@ class Piece {
     this.hasMoved = false;
 
     this.renderPiece();
-    this.getValidSquares();
   }
 
   renderPiece() {
@@ -180,19 +198,115 @@ class Piece {
   getValidSquares() {
     const validSquares = [];
 
-    if (this.type === "pawn" && this.color === "light") {
+    if (this.type === "pawn") {
+      const currentFileIndex = files.findIndex((file) => {
+        return file === this.file;
+      });
+
+      if (this.color === "light") {
+        const topLeftSquareWithOpponent = document.querySelector(
+          `.Square[data-rank="${parseInt(this.rank) + 1}"][data-file="${files[currentFileIndex - 1]}"]:has(.Piece[data-color="dark"])`,
+        );
+
+        if (topLeftSquareWithOpponent) {
+          validSquares.push(topLeftSquareWithOpponent);
+        }
+
+        const topRightSquareWithOpponent = document.querySelector(
+          `.Square[data-rank="${parseInt(this.rank) + 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="dark"])`,
+        );
+
+        if (topRightSquareWithOpponent) {
+          validSquares.push(topRightSquareWithOpponent);
+        }
+      } else {
+        const bottomLeftSquareWithOpponent = document.querySelector(
+          `.Square[data-rank="${parseInt(this.rank) - 1}"][data-file="${files[currentFileIndex - 1]}"]:has(.Piece[data-color="light"])`,
+        );
+
+        if (bottomLeftSquareWithOpponent) {
+          validSquares.push(bottomLeftSquareWithOpponent);
+        }
+
+        const bottomRightSquareWithOpponent = document.querySelector(
+          `.Square[data-rank="${parseInt(this.rank) - 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="light"])`,
+        );
+
+        if (bottomRightSquareWithOpponent) {
+          validSquares.push(bottomRightSquareWithOpponent);
+        }
+      }
+
+      const isBlocked = document.querySelector(
+        `.Square[data-rank="${this.color === "light" ? parseInt(this.rank) + 1 : parseInt(this.rank) - 1}"][data-file="${this.file}"] .Piece`,
+      );
+
+      if (isBlocked) return validSquares;
+
       validSquares.push(
         document.querySelector(
-          `.Square[data-rank="${parseInt(this.rank) + 1}"][data-file="${this.file}"]`,
+          `.Square[data-rank="${this.color === "light" ? parseInt(this.rank) + 1 : parseInt(this.rank) - 1}"][data-file="${this.file}"]`,
         ),
       );
 
       if (!this.hasMoved) {
         validSquares.push(
           document.querySelector(
-            `.Square[data-rank="${parseInt(this.rank) + 2}"][data-file="${this.file}"]`,
+            `.Square[data-rank="${this.color === "light" ? parseInt(this.rank) + 2 : parseInt(this.rank) - 2}"][data-file="${this.file}"]`,
           ),
         );
+      }
+    }
+
+    if (this.type === "rook") {
+      // up
+      for (let i = 1; i < 8; i++) {
+        const square = document.querySelector(
+          `.Square[data-rank="${parseInt(this.rank) + i}"][data-file="${this.file}"]`,
+        );
+
+        if (square) {
+          validSquares.push(square);
+        }
+      }
+
+      // down
+      for (let i = 1; i < 8; i++) {
+        const square = document.querySelector(
+          `.Square[data-rank="${parseInt(this.rank) - i}"][data-file="${this.file}"]`,
+        );
+
+        if (square) {
+          validSquares.push(square);
+        }
+      }
+
+      const currentFileIndex = files.indexOf(this.file);
+
+      // right
+      for (let i = 1; i < 8; i++) {
+        const file = files[currentFileIndex + i];
+
+        const square = document.querySelector(
+          `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
+        );
+
+        if (square) {
+          validSquares.push(square);
+        }
+      }
+
+      // left
+      for (let i = 1; i < 8; i++) {
+        const file = files[currentFileIndex - i];
+
+        const square = document.querySelector(
+          `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
+        );
+
+        if (square) {
+          validSquares.push(square);
+        }
       }
     }
 
