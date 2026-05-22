@@ -275,9 +275,20 @@ class Piece {
             `.Square[data-rank="${parseInt(this.rank) + i * direction}"][data-file="${this.file}"]`,
           );
 
-          if (square) {
+          if (!square) break;
+
+          const piece = square.querySelector(".Piece");
+
+          if (!piece) {
+            validSquares.push(square);
+            continue;
+          }
+
+          if (piece.dataset.color !== this.color) {
             validSquares.push(square);
           }
+
+          break;
         }
       });
 
@@ -292,9 +303,20 @@ class Piece {
             `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
           );
 
-          if (square) {
+          if (!square) break;
+
+          const piece = square.querySelector(".Piece");
+
+          if (!piece) {
+            validSquares.push(square);
+            continue;
+          }
+
+          if (piece.dataset.color !== this.color) {
             validSquares.push(square);
           }
+
+          break;
         }
       });
     }
