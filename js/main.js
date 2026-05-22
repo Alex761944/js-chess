@@ -202,12 +202,9 @@ class Piece {
 
   getValidSquares() {
     const validSquares = [];
+    const currentFileIndex = files.indexOf(this.file);
 
     if (this.type === "pawn") {
-      const currentFileIndex = files.findIndex((file) => {
-        return file === this.file;
-      });
-
       if (this.color === "light") {
         const topLeftSquareWithOpponent = document.querySelector(
           `.Square[data-rank="${parseInt(this.rank) + 1}"][data-file="${files[currentFileIndex - 1]}"]:has(.Piece[data-color="dark"])`,
@@ -271,8 +268,6 @@ class Piece {
         { file: -1, rank: 0 },
       ];
 
-      const currentFileIndex = files.indexOf(this.file);
-
       rookDirections.forEach((rookDirection) => {
         for (let i = 1; i < 8; i++) {
           const file = files[currentFileIndex + i * rookDirection.file];
@@ -308,8 +303,6 @@ class Piece {
         { file: -1, rank: -1 },
       ];
 
-      const currentFileIndex = files.indexOf(this.file);
-
       bishopDirections.forEach((bishopDirection) => {
         for (let i = 1; i < 8; i++) {
           const file = files[currentFileIndex + i * bishopDirection.file];
@@ -334,6 +327,43 @@ class Piece {
           }
 
           break;
+        }
+      });
+    }
+
+    if (this.type === "king") {
+      const kingDirections = [
+        { file: 0, rank: 1 },
+        { file: 0, rank: -1 },
+        { file: 1, rank: 0 },
+        { file: -1, rank: 0 },
+
+        { file: 1, rank: 1 },
+        { file: -1, rank: 1 },
+        { file: 1, rank: -1 },
+        { file: -1, rank: -1 },
+      ];
+
+      kingDirections.forEach((kingDirection) => {
+        const file = files[currentFileIndex + kingDirection.file];
+
+        const rank = parseInt(this.rank) + kingDirection.rank;
+
+        const square = document.querySelector(
+          `.Square[data-rank="${rank}"][data-file="${file}"]`,
+        );
+
+        if (!square) return;
+
+        const piece = square.querySelector(".Piece");
+
+        if (!piece) {
+          validSquares.push(square);
+          return;
+        }
+
+        if (piece.dataset.color !== this.color) {
+          validSquares.push(square);
         }
       });
     }
