@@ -264,41 +264,22 @@ class Piece {
     }
 
     if (this.type === "rook") {
-      // up and down
-      const directions = [1, -1];
-
-      directions.forEach((direction) => {
-        for (let i = 1; i < 8; i++) {
-          const square = document.querySelector(
-            `.Square[data-rank="${parseInt(this.rank) + i * direction}"][data-file="${this.file}"]`,
-          );
-
-          if (!square) break;
-
-          const piece = square.querySelector(".Piece");
-
-          if (!piece) {
-            validSquares.push(square);
-            continue;
-          }
-
-          if (piece.dataset.color !== this.color) {
-            validSquares.push(square);
-          }
-
-          break;
-        }
-      });
+      const rookDirections = [
+        { file: 0, rank: 1 },
+        { file: 0, rank: -1 },
+        { file: 1, rank: 0 },
+        { file: -1, rank: 0 },
+      ];
 
       const currentFileIndex = files.indexOf(this.file);
 
-      // right and left
-      directions.forEach((direction) => {
+      rookDirections.forEach((rookDirection) => {
         for (let i = 1; i < 8; i++) {
-          const file = files[currentFileIndex + i * direction];
+          const file = files[currentFileIndex + i * rookDirection.file];
+          const rank = parseInt(this.rank) + i * rookDirection.rank;
 
           const square = document.querySelector(
-            `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
+            `.Square[data-rank="${rank}"][data-file="${file}"]`,
           );
 
           if (!square) break;
@@ -320,7 +301,7 @@ class Piece {
     }
 
     if (this.type === "bishop") {
-      const directions = [
+      const bishopDirections = [
         { file: 1, rank: 1 },
         { file: -1, rank: 1 },
         { file: 1, rank: -1 },
@@ -329,11 +310,11 @@ class Piece {
 
       const currentFileIndex = files.indexOf(this.file);
 
-      directions.forEach((direction) => {
+      bishopDirections.forEach((bishopDirection) => {
         for (let i = 1; i < 8; i++) {
-          const file = files[currentFileIndex + i * direction.file];
+          const file = files[currentFileIndex + i * bishopDirection.file];
 
-          const rank = parseInt(this.rank) + i * direction.rank;
+          const rank = parseInt(this.rank) + i * bishopDirection.rank;
 
           const square = document.querySelector(
             `.Square[data-rank="${rank}"][data-file="${file}"]`,
