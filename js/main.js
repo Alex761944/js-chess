@@ -196,6 +196,9 @@ class Piece {
 
     targetSquare.appendChild(this.domElement);
 
+    this.file = file;
+    this.rank = rank;
+
     if (!this.hasMoved) this.hasMoved = true;
   }
 
@@ -263,55 +266,37 @@ class Piece {
     }
 
     if (this.type === "rook") {
-      // up
-      for (let i = 1; i < 8; i++) {
-        const square = document.querySelector(
-          `.Square[data-rank="${parseInt(this.rank) + i}"][data-file="${this.file}"]`,
-        );
+      // up and down
+      const directions = [1, -1];
 
-        if (square) {
-          validSquares.push(square);
+      directions.forEach((direction) => {
+        for (let i = 1; i < 8; i++) {
+          const square = document.querySelector(
+            `.Square[data-rank="${parseInt(this.rank) + i * direction}"][data-file="${this.file}"]`,
+          );
+
+          if (square) {
+            validSquares.push(square);
+          }
         }
-      }
-
-      // down
-      for (let i = 1; i < 8; i++) {
-        const square = document.querySelector(
-          `.Square[data-rank="${parseInt(this.rank) - i}"][data-file="${this.file}"]`,
-        );
-
-        if (square) {
-          validSquares.push(square);
-        }
-      }
+      });
 
       const currentFileIndex = files.indexOf(this.file);
 
-      // right
-      for (let i = 1; i < 8; i++) {
-        const file = files[currentFileIndex + i];
+      // right and left
+      directions.forEach((direction) => {
+        for (let i = 1; i < 8; i++) {
+          const file = files[currentFileIndex + i * direction];
 
-        const square = document.querySelector(
-          `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
-        );
+          const square = document.querySelector(
+            `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
+          );
 
-        if (square) {
-          validSquares.push(square);
+          if (square) {
+            validSquares.push(square);
+          }
         }
-      }
-
-      // left
-      for (let i = 1; i < 8; i++) {
-        const file = files[currentFileIndex - i];
-
-        const square = document.querySelector(
-          `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
-        );
-
-        if (square) {
-          validSquares.push(square);
-        }
-      }
+      });
     }
 
     return validSquares.filter((validSquare) => {
