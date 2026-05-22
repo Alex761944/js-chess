@@ -81,8 +81,6 @@ class Game {
       new Piece("pawn", "light", "h", "2"),
 
       // Testing
-      new Piece("pawn", "dark", "a", "3"),
-      new Piece("pawn", "dark", "c", "3"),
     ];
   }
 
@@ -301,6 +299,44 @@ class Piece {
 
           const square = document.querySelector(
             `.Square[data-rank="${this.rank}"][data-file="${file}"]`,
+          );
+
+          if (!square) break;
+
+          const piece = square.querySelector(".Piece");
+
+          if (!piece) {
+            validSquares.push(square);
+            continue;
+          }
+
+          if (piece.dataset.color !== this.color) {
+            validSquares.push(square);
+          }
+
+          break;
+        }
+      });
+    }
+
+    if (this.type === "bishop") {
+      const directions = [
+        { file: 1, rank: 1 },
+        { file: -1, rank: 1 },
+        { file: 1, rank: -1 },
+        { file: -1, rank: -1 },
+      ];
+
+      const currentFileIndex = files.indexOf(this.file);
+
+      directions.forEach((direction) => {
+        for (let i = 1; i < 8; i++) {
+          const file = files[currentFileIndex + i * direction.file];
+
+          const rank = parseInt(this.rank) + i * direction.rank;
+
+          const square = document.querySelector(
+            `.Square[data-rank="${rank}"][data-file="${file}"]`,
           );
 
           if (!square) break;
