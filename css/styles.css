@@ -5,6 +5,7 @@ p {
 .CurrentPlayerIndicator {
   display: flex;
   justify-content: flex-end;
+  text-transform: capitalize;
   gap: 4px;
   width: 720px;
   color: white;
