@@ -14,8 +14,8 @@ class Game {
   }
 
   createBoard() {
-    let rank = 9;
     const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    let rank = 9;
 
     for (let i = 0; i < 64; i++) {
       const squareElement = document.createElement("div");
@@ -32,11 +32,10 @@ class Game {
         rank--;
       }
 
-      squareElement.setAttribute("data-rank", rank);
-
       const file = files[col];
 
       squareElement.setAttribute("data-file", file);
+      squareElement.setAttribute("data-rank", rank);
 
       this.boardElement.appendChild(squareElement);
     }
@@ -116,7 +115,7 @@ class Game {
       if (
         validSquares.find((validSquare) => {
           return (
-            validSquare.dataset.rank === rank &&
+            Number(validSquare.dataset.rank) === rank &&
             validSquare.dataset.file === file
           );
         })
@@ -229,29 +228,34 @@ class Piece {
           );
         }
 
-        // TODO: Replace selectors with getSquare/squareHasOpponent method.
-        const topRightSquareWithOpponent = document.querySelector(
-          `.Square[data-rank="${this.rank + 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="dark"])`,
+        const topRightSquareHasOpponent = this.squareHasOpponent(
+          files[currentFileIndex + 1],
+          this.rank + 1,
+          "dark",
         );
 
-        if (topRightSquareWithOpponent) {
-          validSquares.push(topRightSquareWithOpponent);
+        if (topRightSquareHasOpponent) {
+          validSquares.push(files[currentFileIndex + 1], this.rank + 1);
         }
       } else {
-        const bottomLeftSquareWithOpponent = document.querySelector(
-          `.Square[data-rank="${this.rank - 1}"][data-file="${files[currentFileIndex - 1]}"]:has(.Piece[data-color="light"])`,
+        const bottomLeftSquareHasOpponent = this.squareHasOpponent(
+          files[currentFileIndex - 1],
+          this.rank - 1,
+          "light",
         );
 
-        if (bottomLeftSquareWithOpponent) {
-          validSquares.push(bottomLeftSquareWithOpponent);
+        if (bottomLeftSquareHasOpponent) {
+          validSquares.push(files[currentFileIndex - 1], this.rank - 1);
         }
 
-        const bottomRightSquareWithOpponent = document.querySelector(
-          `.Square[data-rank="${this.rank - 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="light"])`,
+        const bottomRightSquareHasOpponent = this.squareHasOpponent(
+          files[currentFileIndex + 1],
+          this.rank - 1,
+          "light",
         );
 
-        if (bottomRightSquareWithOpponent) {
-          validSquares.push(bottomRightSquareWithOpponent);
+        if (bottomRightSquareHasOpponent) {
+          validSquares.push(files[currentFileIndex + 1], this.rank - 1);
         }
       }
 
