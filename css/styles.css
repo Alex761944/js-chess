@@ -41,6 +41,8 @@ p {
 
   width: 80px;
   height: 80px;
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .Files {
@@ -50,6 +52,7 @@ p {
 }
 
 .Square {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -67,11 +70,31 @@ p {
   background-color: lightblue;
 }
 
-.Square--Valid {
-  background-color: lightcoral;
+.Square--Valid::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: lightblue;
 }
 
-.Square img {
+.Square--Valid:has(.Piece)::after {
+  content: "";
+  position: absolute;
+
+  width: 72px;
+  height: 72px;
+
+  border-radius: 10%;
+  border: 5px solid lightblue;
+
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.Piece {
   width: 70%;
   height: 70%;
   object-fit: contain;

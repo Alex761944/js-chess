@@ -10,7 +10,7 @@ class Game {
 
     this.createBoard();
     this.placePieces();
-    this.squareClick();
+    this.addEventListeners();
   }
 
   createBoard() {
@@ -18,73 +18,74 @@ class Game {
     const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
     for (let i = 0; i < 64; i++) {
-      const square = document.createElement("div");
+      const squareElement = document.createElement("div");
 
       const row = Math.floor(i / 8);
       const col = i % 8;
 
       const isDark = (row + col) % 2 === 1;
 
-      square.classList.add("Square");
-      square.classList.add(isDark ? "Square--Dark" : "Square--Light");
+      squareElement.classList.add("Square");
+      squareElement.classList.add(isDark ? "Square--Dark" : "Square--Light");
 
       if (i % 8 === 0) {
         rank--;
       }
 
-      square.setAttribute("data-rank", rank);
+      squareElement.setAttribute("data-rank", rank);
 
       const file = files[col];
 
-      square.setAttribute("data-file", file);
+      squareElement.setAttribute("data-file", file);
 
-      this.boardElement.appendChild(square);
+      this.boardElement.appendChild(squareElement);
     }
   }
 
   placePieces() {
     this.pieces = [
-      new Piece("rook", "dark", "a", "8"),
-      new Piece("knight", "dark", "b", "8"),
-      new Piece("bishop", "dark", "c", "8"),
-      new Piece("queen", "dark", "d", "8"),
-      new Piece("king", "dark", "e", "8"),
-      new Piece("bishop", "dark", "f", "8"),
-      new Piece("knight", "dark", "g", "8"),
-      new Piece("rook", "dark", "h", "8"),
+      new Piece("rook", "dark", "a", 8),
+      new Piece("knight", "dark", "b", 8),
+      new Piece("bishop", "dark", "c", 8),
+      new Piece("queen", "dark", "d", 8),
+      new Piece("king", "dark", "e", 8),
+      new Piece("bishop", "dark", "f", 8),
+      new Piece("knight", "dark", "g", 8),
+      new Piece("rook", "dark", "h", 8),
 
-      new Piece("pawn", "dark", "a", "7"),
-      new Piece("pawn", "dark", "b", "7"),
-      new Piece("pawn", "dark", "c", "7"),
-      new Piece("pawn", "dark", "d", "7"),
-      new Piece("pawn", "dark", "e", "7"),
-      new Piece("pawn", "dark", "f", "7"),
-      new Piece("pawn", "dark", "g", "7"),
-      new Piece("pawn", "dark", "h", "7"),
+      new Piece("pawn", "dark", "a", 7),
+      new Piece("pawn", "dark", "b", 7),
+      new Piece("pawn", "dark", "c", 7),
+      new Piece("pawn", "dark", "d", 7),
+      new Piece("pawn", "dark", "e", 7),
+      new Piece("pawn", "dark", "f", 7),
+      new Piece("pawn", "dark", "g", 7),
+      new Piece("pawn", "dark", "h", 7),
 
-      new Piece("rook", "light", "a", "1"),
-      new Piece("knight", "light", "b", "1"),
-      new Piece("bishop", "light", "c", "1"),
-      new Piece("queen", "light", "d", "1"),
-      new Piece("king", "light", "e", "1"),
-      new Piece("bishop", "light", "f", "1"),
-      new Piece("knight", "light", "g", "1"),
-      new Piece("rook", "light", "h", "1"),
+      new Piece("rook", "light", "a", 1),
+      new Piece("knight", "light", "b", 1),
+      new Piece("bishop", "light", "c", 1),
+      new Piece("queen", "light", "d", 1),
+      new Piece("king", "light", "e", 1),
+      new Piece("bishop", "light", "f", 1),
+      new Piece("knight", "light", "g", 1),
+      new Piece("rook", "light", "h", 1),
 
-      new Piece("pawn", "light", "a", "2"),
-      new Piece("pawn", "light", "b", "2"),
-      new Piece("pawn", "light", "c", "2"),
-      new Piece("pawn", "light", "d", "2"),
-      new Piece("pawn", "light", "e", "2"),
-      new Piece("pawn", "light", "f", "2"),
-      new Piece("pawn", "light", "g", "2"),
-      new Piece("pawn", "light", "h", "2"),
+      new Piece("pawn", "light", "a", 2),
+      new Piece("pawn", "light", "b", 2),
+      new Piece("pawn", "light", "c", 2),
+      new Piece("pawn", "light", "d", 2),
+      new Piece("pawn", "light", "e", 2),
+      new Piece("pawn", "light", "f", 2),
+      new Piece("pawn", "light", "g", 2),
+      new Piece("pawn", "light", "h", 2),
 
       // Testing
+      new Piece("pawn", "dark", "b", 3),
     ];
   }
 
-  squareClick() {
+  addEventListeners() {
     this.squareElements.forEach((squareElement) => {
       squareElement.addEventListener("click", this.handleSquareClick);
     });
@@ -99,7 +100,7 @@ class Game {
     });
 
     const file = squareElement.dataset.file;
-    const rank = squareElement.dataset.rank;
+    const rank = Number(squareElement.dataset.rank);
 
     if (!this.activePiece) {
       this.activePiece = this.pieces.find((piece) => {
@@ -180,17 +181,13 @@ class Piece {
     pieceElement.dataset.type = this.type;
     pieceElement.dataset.color = this.color;
 
-    const squareElement = document.querySelector(
-      `[data-file="${this.file}"][data-rank="${this.rank}"]`,
-    );
+    const squareElement = this.getSquare(this.file, this.rank);
 
     squareElement.appendChild(pieceElement);
   }
 
   goTo(file, rank) {
-    const targetSquare = document.querySelector(
-      `.Square[data-file="${file}"][data-rank="${rank}"]`,
-    );
+    const targetSquare = this.getSquare(file, rank);
 
     targetSquare.appendChild(this.domElement);
 
@@ -220,16 +217,21 @@ class Piece {
 
     if (this.type === "pawn") {
       if (this.color === "light") {
-        const topLeftSquareWithOpponent = document.querySelector(
-          `.Square[data-rank="${parseInt(this.rank) + 1}"][data-file="${files[currentFileIndex - 1]}"]:has(.Piece[data-color="dark"])`,
+        const topLeftSquareHasOpponent = this.squareHasOpponent(
+          files[currentFileIndex - 1],
+          this.rank + 1,
+          "dark",
         );
 
-        if (topLeftSquareWithOpponent) {
-          validSquares.push(topLeftSquareWithOpponent);
+        if (topLeftSquareHasOpponent) {
+          validSquares.push(
+            this.getSquare(files[currentFileIndex - 1], this.rank + 1),
+          );
         }
 
+        // TODO: Replace selectors with getSquare/squareHasOpponent method.
         const topRightSquareWithOpponent = document.querySelector(
-          `.Square[data-rank="${parseInt(this.rank) + 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="dark"])`,
+          `.Square[data-rank="${this.rank + 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="dark"])`,
         );
 
         if (topRightSquareWithOpponent) {
@@ -237,7 +239,7 @@ class Piece {
         }
       } else {
         const bottomLeftSquareWithOpponent = document.querySelector(
-          `.Square[data-rank="${parseInt(this.rank) - 1}"][data-file="${files[currentFileIndex - 1]}"]:has(.Piece[data-color="light"])`,
+          `.Square[data-rank="${this.rank - 1}"][data-file="${files[currentFileIndex - 1]}"]:has(.Piece[data-color="light"])`,
         );
 
         if (bottomLeftSquareWithOpponent) {
@@ -245,7 +247,7 @@ class Piece {
         }
 
         const bottomRightSquareWithOpponent = document.querySelector(
-          `.Square[data-rank="${parseInt(this.rank) - 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="light"])`,
+          `.Square[data-rank="${this.rank - 1}"][data-file="${files[currentFileIndex + 1]}"]:has(.Piece[data-color="light"])`,
         );
 
         if (bottomRightSquareWithOpponent) {
@@ -254,21 +256,21 @@ class Piece {
       }
 
       const isBlocked = document.querySelector(
-        `.Square[data-rank="${this.color === "light" ? parseInt(this.rank) + 1 : parseInt(this.rank) - 1}"][data-file="${this.file}"] .Piece`,
+        `.Square[data-rank="${this.color === "light" ? this.rank + 1 : this.rank - 1}"][data-file="${this.file}"] .Piece`,
       );
 
       if (isBlocked) return validSquares;
 
       validSquares.push(
         document.querySelector(
-          `.Square[data-rank="${this.color === "light" ? parseInt(this.rank) + 1 : parseInt(this.rank) - 1}"][data-file="${this.file}"]`,
+          `.Square[data-rank="${this.color === "light" ? this.rank + 1 : this.rank - 1}"][data-file="${this.file}"]`,
         ),
       );
 
       if (!this.hasMoved) {
         validSquares.push(
           document.querySelector(
-            `.Square[data-rank="${this.color === "light" ? parseInt(this.rank) + 2 : parseInt(this.rank) - 2}"][data-file="${this.file}"]`,
+            `.Square[data-rank="${this.color === "light" ? this.rank + 2 : this.rank - 2}"][data-file="${this.file}"]`,
           ),
         );
       }
@@ -278,23 +280,21 @@ class Piece {
       rookDirections.forEach((rookDirection) => {
         for (let i = 1; i < 8; i++) {
           const file = files[currentFileIndex + i * rookDirection.file];
-          const rank = parseInt(this.rank) + i * rookDirection.rank;
+          const rank = this.rank + i * rookDirection.rank;
 
-          const square = document.querySelector(
-            `.Square[data-rank="${rank}"][data-file="${file}"]`,
-          );
+          const squareElement = this.getSquare(file, rank);
 
-          if (!square) break;
+          if (!squareElement) break;
 
-          const piece = square.querySelector(".Piece");
+          const pieceElement = squareElement.querySelector(".Piece");
 
-          if (!piece) {
-            validSquares.push(square);
+          if (!pieceElement) {
+            validSquares.push(squareElement);
             continue;
           }
 
-          if (piece.dataset.color !== this.color) {
-            validSquares.push(square);
+          if (pieceElement.dataset.color !== this.color) {
+            validSquares.push(squareElement);
           }
 
           break;
@@ -307,23 +307,21 @@ class Piece {
         for (let i = 1; i < 8; i++) {
           const file = files[currentFileIndex + i * bishopDirection.file];
 
-          const rank = parseInt(this.rank) + i * bishopDirection.rank;
+          const rank = this.rank + i * bishopDirection.rank;
 
-          const square = document.querySelector(
-            `.Square[data-rank="${rank}"][data-file="${file}"]`,
-          );
+          const squareElement = this.getSquare(file, rank);
 
-          if (!square) break;
+          if (!squareElement) break;
 
-          const piece = square.querySelector(".Piece");
+          const pieceElement = squareElement.querySelector(".Piece");
 
-          if (!piece) {
-            validSquares.push(square);
+          if (!pieceElement) {
+            validSquares.push(squareElement);
             continue;
           }
 
-          if (piece.dataset.color !== this.color) {
-            validSquares.push(square);
+          if (pieceElement.dataset.color !== this.color) {
+            validSquares.push(squareElement);
           }
 
           break;
@@ -347,23 +345,21 @@ class Piece {
       kingDirections.forEach((kingDirection) => {
         const file = files[currentFileIndex + kingDirection.file];
 
-        const rank = parseInt(this.rank) + kingDirection.rank;
+        const rank = this.rank + kingDirection.rank;
 
-        const square = document.querySelector(
-          `.Square[data-rank="${rank}"][data-file="${file}"]`,
-        );
+        const squareElement = this.getSquare(file, rank);
 
-        if (!square) return;
+        if (!squareElement) return;
 
-        const piece = square.querySelector(".Piece");
+        const pieceElement = squareElement.querySelector(".Piece");
 
-        if (!piece) {
-          validSquares.push(square);
+        if (!pieceElement) {
+          validSquares.push(squareElement);
           return;
         }
 
-        if (piece.dataset.color !== this.color) {
-          validSquares.push(square);
+        if (pieceElement.dataset.color !== this.color) {
+          validSquares.push(squareElement);
         }
       });
     }
@@ -374,23 +370,21 @@ class Piece {
       queenDirections.forEach((queenDirection) => {
         for (let i = 1; i < 8; i++) {
           const file = files[currentFileIndex + i * queenDirection.file];
-          const rank = parseInt(this.rank) + i * queenDirection.rank;
+          const rank = this.rank + i * queenDirection.rank;
 
-          const square = document.querySelector(
-            `.Square[data-rank="${rank}"][data-file="${file}"]`,
-          );
+          const squareElement = this.getSquare(file, rank);
 
-          if (!square) break;
+          if (!squareElement) break;
 
-          const piece = square.querySelector(".Piece");
+          const pieceElement = squareElement.querySelector(".Piece");
 
-          if (!piece) {
-            validSquares.push(square);
+          if (!pieceElement) {
+            validSquares.push(squareElement);
             continue;
           }
 
-          if (piece.dataset.color !== this.color) {
-            validSquares.push(square);
+          if (pieceElement.dataset.color !== this.color) {
+            validSquares.push(squareElement);
           }
 
           break;
@@ -401,6 +395,24 @@ class Piece {
     return validSquares.filter((validSquare) => {
       return validSquare != null;
     });
+  }
+
+  getSquare(file, rank) {
+    return document.querySelector(
+      `.Square[data-file="${file}"][data-rank="${rank}"]`,
+    );
+  }
+
+  squareHasOpponent(file, rank, opponentColor) {
+    const element = document.querySelector(
+      `.Square[data-rank="${rank}"][data-file="${file}"]:has(.Piece[data-color="${opponentColor}"])`,
+    );
+
+    if (element) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   get domElement() {
