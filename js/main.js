@@ -171,18 +171,18 @@ class Piece {
   }
 
   renderPiece() {
-    const pieceElement = document.createElement("img");
+    const piece = document.createElement("img");
 
-    pieceElement.classList.add("Piece");
+    piece.classList.add("Piece");
 
-    pieceElement.src = `./img/${this.type}_${this.color}.png`;
+    piece.src = `./img/${this.type}_${this.color}.png`;
 
-    pieceElement.dataset.type = this.type;
-    pieceElement.dataset.color = this.color;
+    piece.dataset.type = this.type;
+    piece.dataset.color = this.color;
 
     const squareElement = this.getSquare(this.file, this.rank);
 
-    squareElement.appendChild(pieceElement);
+    squareElement.appendChild(piece);
   }
 
   goTo(file, rank) {
