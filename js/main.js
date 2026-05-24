@@ -177,13 +177,67 @@ class Piece {
 
   goTo(file, rank) {
     const targetSquareElement = this.getSquare(file, rank);
+    const targetPieceElement = targetSquareElement.querySelector(".Piece");
+
+    if (targetPieceElement) {
+      targetPieceElement.remove();
+    }
 
     targetSquareElement.appendChild(this.domElement);
+
+    //TODO: Create helper function that returns boolean.
+    const isRohade =
+      this.type === "king" &&
+      Math.abs(files.indexOf(file) - files.indexOf(this.file)) === 2;
+
+    if (isRohade) {
+      if (file === "g") {
+        const rookTargetSquareElement = this.getSquare("f", this.rank);
+
+        const rook = game.pieces.find((piece) => {
+          return (
+            piece.type === "rook" &&
+            piece.color === this.color &&
+            piece.file === "h" &&
+            piece.rank === this.rank
+          );
+        });
+
+        rookTargetSquareElement.appendChild(rook.domElement);
+
+        rook.file = "f";
+        rook.rank = this.rank;
+        rook.hasMoved = true;
+      }
+
+      if (file === "c") {
+        const rookTargetSquareElement = this.getSquare("d", this.rank);
+
+        const rook = game.pieces.find((piece) => {
+          return (
+            piece.type === "rook" &&
+            piece.color === this.color &&
+            piece.file === "a" &&
+            piece.rank === this.rank
+          );
+        });
+
+        rookTargetSquareElement.appendChild(rook.domElement);
+
+        rook.file = "d";
+        rook.rank = this.rank;
+        rook.hasMoved = true;
+      }
+    }
 
     this.file = file;
     this.rank = rank;
 
     if (!this.hasMoved) this.hasMoved = true;
+
+    if (this.type === "pawn" && (rank === 8 || rank === 1)) {
+      this.promote();
+    }
   }
 
   getValidSquares() {
@@ -378,6 +432,45 @@ class Piece {
           validSquares.push(squareElement);
         }
       });
+
+      if (!this.hasMoved) {
+        const rank = this.rank;
+
+        const shortRohadeRook = game.pieces.find((piece) => {
+          return (
+            piece.type === "rook" &&
+            piece.color === this.color &&
+            piece.file === "h" &&
+            piece.rank === rank
+          );
+        });
+
+        const shortSideIsClear =
+          !this.squareIsOccupied("f", rank) &&
+          !this.squareIsOccupied("g", rank);
+
+        if (shortRohadeRook && !shortRohadeRook.hasMoved && shortSideIsClear) {
+          validSquares.push(this.getSquare("g", rank));
+        }
+
+        const longRohadeRook = game.pieces.find((piece) => {
+          return (
+            piece.type === "rook" &&
+            piece.color === this.color &&
+            piece.file === "a" &&
+            piece.rank === rank
+          );
+        });
+
+        const longSideIsClear =
+          !this.squareIsOccupied("b", rank) &&
+          !this.squareIsOccupied("c", rank) &&
+          !this.squareIsOccupied("d", rank);
+
+        if (longRohadeRook && !longRohadeRook.hasMoved && longSideIsClear) {
+          validSquares.push(this.getSquare("c", rank));
+        }
+      }
     }
 
     if (this.type === "queen") {
@@ -475,6 +568,13 @@ class Piece {
     }
   }
 
+  promote() {
+    this.type = "queen";
+
+    this.domElement.src = `./img/queen_${this.color}.png`;
+    this.domElement.dataset.type = "queen";
+  }
+
   get domElement() {
     return document.querySelector(
       `.Square[data-file="${this.file}"][data-rank="${this.rank}"] .Piece`,
@@ -482,4 +582,4 @@ class Piece {
   }
 }
 
-new Game();
+const game = new Game();
