@@ -71,7 +71,6 @@ class Game {
       }),
 
       // Testing
-      new Piece("pawn", "dark", "b", 3),
     ];
   }
 
@@ -185,10 +184,7 @@ class Piece {
 
     targetSquareElement.appendChild(this.domElement);
 
-    //TODO: Create helper function that returns boolean.
-    const isRohade =
-      this.type === "king" &&
-      Math.abs(files.indexOf(file) - files.indexOf(this.file)) === 2;
+    const isRohade = this.isRohadeMove(file);
 
     if (isRohade) {
       if (file === "g") {
@@ -566,6 +562,13 @@ class Piece {
     } else {
       return false;
     }
+  }
+
+  isRohadeMove(file) {
+    return (
+      this.type === "king" &&
+      Math.abs(files.indexOf(file) - files.indexOf(this.file)) === 2
+    );
   }
 
   promote() {
