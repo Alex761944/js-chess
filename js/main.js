@@ -129,7 +129,7 @@ class Game {
     if (this.activePiece) {
       clickedSquareElement.classList.add("Square--Selected");
 
-      const validSquareElements = this.activePiece.getValidSquare();
+      const validSquareElements = this.activePiece.getValidSquares();
 
       this.squareElements.forEach((squareElement) => {
         if (validSquareElements.includes(squareElement)) {
@@ -214,6 +214,17 @@ class Piece {
       { file: -1, rank: 1 },
       { file: 1, rank: -1 },
       { file: -1, rank: -1 },
+    ];
+
+    const knightDirections = [
+      { file: 1, rank: 2 },
+      { file: 2, rank: 1 },
+      { file: 2, rank: -1 },
+      { file: 1, rank: -2 },
+      { file: -1, rank: -2 },
+      { file: -2, rank: -1 },
+      { file: -2, rank: 1 },
+      { file: -1, rank: 2 },
     ];
 
     const queenDirections = [...rookDirections, ...bishopDirections];
@@ -391,6 +402,28 @@ class Piece {
           }
 
           break;
+        }
+      });
+    }
+
+    if (this.type === "knight") {
+      knightDirections.forEach((knightDirection) => {
+        const file = files[currentFileIndex + knightDirection.file];
+        const rank = this.rank + knightDirection.rank;
+
+        const squareElement = this.getSquare(file, rank);
+
+        if (!squareElement) return;
+
+        const pieceElement = squareElement.querySelector(".Piece");
+
+        if (!pieceElement) {
+          validSquares.push(squareElement);
+          return;
+        }
+
+        if (pieceElement.dataset.color !== this.color) {
+          validSquares.push(squareElement);
         }
       });
     }
