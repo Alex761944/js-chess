@@ -71,6 +71,7 @@ class Game {
       }),
 
       // Testing
+      new Piece("pawn", "dark", "c", 4),
     ];
   }
 
@@ -110,6 +111,19 @@ class Game {
           );
         })
       ) {
+        const targetSquareElement = this.activePiece.getSquare(file, rank);
+        const targetPieceElement = targetSquareElement.querySelector(".Piece");
+
+        if (targetPieceElement) {
+          this.activePiece.capture(file, rank, false);
+        } else if (
+          this.activePiece.type === "pawn" &&
+          this.activePiece.file !== file &&
+          !targetPieceElement
+        ) {
+          this.activePiece.capture(file, rank, true);
+        }
+
         this.activePiece.goTo(file, rank);
 
         this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
@@ -156,6 +170,8 @@ class Piece {
 
     this.hasMoved = false;
 
+    this.previousLocations = [];
+
     this.renderPiece();
   }
 
@@ -174,13 +190,42 @@ class Piece {
     squareElement.appendChild(pieceElement);
   }
 
+  capture(file, rank, isEnPassen) {
+    if (isEnPassen) {
+      if (this.color === "light") {
+        const enPassenPiece = game.pieces.find((piece) => {
+          return (
+            piece.type === "pawn" &&
+            piece.color === "dark" &&
+            piece.file === file &&
+            piece.rank === rank - 1
+          );
+        });
+
+        enPassenPiece.domElement.remove();
+      } else {
+        const enPassenPiece = game.pieces.find((piece) => {
+          return (
+            piece.type === "pawn" &&
+            piece.color === "light" &&
+            piece.file === file &&
+            piece.rank === rank + 1
+          );
+        });
+
+        enPassenPiece.domElement.remove();
+      }
+    } else {
+      const regularPiece = game.pieces.find((piece) => {
+        return piece.file === file && piece.rank === rank;
+      });
+
+      regularPiece.domElement.remove();
+    }
+  }
+
   goTo(file, rank) {
     const targetSquareElement = this.getSquare(file, rank);
-    const targetPieceElement = targetSquareElement.querySelector(".Piece");
-
-    if (targetPieceElement) {
-      targetPieceElement.remove();
-    }
 
     targetSquareElement.appendChild(this.domElement);
 
@@ -225,6 +270,8 @@ class Piece {
         rook.hasMoved = true;
       }
     }
+
+    this.previousLocations.push({ file: this.file, rank: this.rank });
 
     this.file = file;
     this.rank = rank;
@@ -304,6 +351,44 @@ class Piece {
             this.getSquare(files[currentFileIndex + 1], this.rank + 1),
           );
         }
+
+        const opponentPawnToTheRight = game.pieces.find((piece) => {
+          return (
+            piece.color === "dark" &&
+            piece.type === "pawn" &&
+            piece.file === files[currentFileIndex + 1] &&
+            piece.rank === this.rank
+          );
+        });
+
+        if (this.rank === 5 && opponentPawnToTheRight) {
+          const currentRank = opponentPawnToTheRight.rank;
+          const previousRank =
+            opponentPawnToTheRight.previousLocations.at(-1)?.rank;
+
+          if (previousRank - currentRank === 2) {
+            validSquares.push(this.getSquare(files[currentFileIndex + 1], 6));
+          }
+        }
+
+        const opponentPawnToTheLeft = game.pieces.find((piece) => {
+          return (
+            piece.color === "dark" &&
+            piece.type === "pawn" &&
+            piece.file === files[currentFileIndex - 1] &&
+            piece.rank === this.rank
+          );
+        });
+
+        if (this.rank === 5 && opponentPawnToTheLeft) {
+          const currentRank = opponentPawnToTheLeft.rank;
+          const previousRank =
+            opponentPawnToTheLeft.previousLocations.at(-1)?.rank;
+
+          if (previousRank - currentRank === 2) {
+            validSquares.push(this.getSquare(files[currentFileIndex - 1], 6));
+          }
+        }
       } else {
         const bottomLeftSquareHasOpponent = this.squareHasOpponent(
           files[currentFileIndex - 1],
@@ -327,6 +412,44 @@ class Piece {
           validSquares.push(
             this.getSquare(files[currentFileIndex + 1], this.rank - 1),
           );
+        }
+
+        const opponentPawnToTheRight = game.pieces.find((piece) => {
+          return (
+            piece.color === "light" &&
+            piece.type === "pawn" &&
+            piece.file === files[currentFileIndex + 1] &&
+            piece.rank === this.rank
+          );
+        });
+
+        if (this.rank === 4 && opponentPawnToTheRight) {
+          const currentRank = opponentPawnToTheRight.rank;
+          const previousRank =
+            opponentPawnToTheRight.previousLocations.at(-1)?.rank;
+
+          if (currentRank - previousRank === 2) {
+            validSquares.push(this.getSquare(files[currentFileIndex + 1], 3));
+          }
+        }
+
+        const opponentPawnToTheLeft = game.pieces.find((piece) => {
+          return (
+            piece.color === "light" &&
+            piece.type === "pawn" &&
+            piece.file === files[currentFileIndex - 1] &&
+            piece.rank === this.rank
+          );
+        });
+
+        if (this.rank === 4 && opponentPawnToTheLeft) {
+          const currentRank = opponentPawnToTheLeft.rank;
+          const previousRank =
+            opponentPawnToTheLeft.previousLocations.at(-1)?.rank;
+
+          if (currentRank - previousRank === 2) {
+            validSquares.push(this.getSquare(files[currentFileIndex - 1], 3));
+          }
         }
       }
 
