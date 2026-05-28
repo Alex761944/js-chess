@@ -190,10 +190,10 @@ class Piece {
     squareElement.appendChild(pieceElement);
   }
 
-  capture(file, rank, isEnPassen) {
-    if (isEnPassen) {
+  capture(file, rank, isEnPassant) {
+    if (isEnPassant) {
       if (this.color === "light") {
-        const enPassenPiece = game.pieces.find((piece) => {
+        const enPassantPiece = game.pieces.find((piece) => {
           return (
             piece.type === "pawn" &&
             piece.color === "dark" &&
@@ -202,9 +202,9 @@ class Piece {
           );
         });
 
-        enPassenPiece.domElement.remove();
+        enPassantPiece.domElement.remove();
       } else {
-        const enPassenPiece = game.pieces.find((piece) => {
+        const enPassantPiece = game.pieces.find((piece) => {
           return (
             piece.type === "pawn" &&
             piece.color === "light" &&
@@ -213,7 +213,7 @@ class Piece {
           );
         });
 
-        enPassenPiece.domElement.remove();
+        enPassantPiece.domElement.remove();
       }
     } else {
       const regularPiece = game.pieces.find((piece) => {
