@@ -1305,14 +1305,14 @@ class Game2 {
       // Testing
       {
         color: "dark",
-        type: "rook",
+        type: "knight",
         file: "d",
-        rank: "3",
+        rank: "5",
       },
       {
-        color: "dark",
+        color: "light",
         type: "pawn",
-        file: "d",
+        file: "b",
         rank: "5",
       },
     ];
@@ -1408,10 +1408,361 @@ class Game2 {
             coveredSquares.push(possibleSquare);
           }
         }
+
         // Rook-Dark (Right)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row}"][data-col="${col + offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+
+          if (possibleSquare.dataset.color === "light") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
         // Rook-Dark (Bottom)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row - offset}"][data-col="${col}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+
+          if (possibleSquare.dataset.color === "light") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
         // Rook-Dark (Left)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row}"][data-col="${col - offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+
+          if (possibleSquare.dataset.color === "light") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
       }
+
+      // Rook-Light
+      if (color === "light") {
+        // Rook-Light (Top)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row + offset}"][data-col="${col}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
+        // Rook-Light (Right)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row}"][data-col="${col + offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
+        // Rook-Light (Bottom)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row - offset}"][data-col="${col}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
+        // Rook-Light (Left)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row}"][data-col="${col - offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+      }
+    }
+
+    // Bishop
+    if (type === "bishop") {
+      // Bishop-Dark
+      if (color === "dark") {
+        // Bishop-Dark (Top-Left)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row + offset}"][data-col="${col - offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+
+          if (possibleSquare.dataset.color === "light") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
+        // Bishop-Dark (Top-Right)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row + offset}"][data-col="${col + offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+
+          if (possibleSquare.dataset.color === "light") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
+        // Bishop-Dark (Bottom-Left)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row - offset}"][data-col="${col - offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+
+          if (possibleSquare.dataset.color === "light") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+
+        // Bishop-Dark (Bottom-Right)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row - offset}"][data-col="${col + offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+
+          if (possibleSquare.dataset.color === "light") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+      }
+
+      // Bishop-Light
+      if (color === "light") {
+        // Bishop-Light (Top-Left)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row + offset}"][data-col="${col - offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+        // Bishop-Light (Top-Right)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row + offset}"][data-col="${col + offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+        // Bishop-Light (Bottom-Left)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row - offset}"][data-col="${col - offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+        // Bishop-Light (Bottom-Right)
+        for (let offset = 1; offset < 8; offset++) {
+          const possibleSquare = document.querySelector(
+            `.Square[data-row="${row - offset}"][data-col="${col + offset}"]`,
+          );
+
+          if (!possibleSquare || possibleSquare.dataset.color === "light")
+            break;
+
+          if (possibleSquare.dataset.color === "dark") {
+            coveredSquares.push(possibleSquare);
+
+            break;
+          }
+
+          if (!possibleSquare.dataset.type) {
+            coveredSquares.push(possibleSquare);
+          }
+        }
+      }
+    }
+
+    // Knight
+    if (type === "knight") {
+      // Push all 8 possible squares
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row + 2}"][data-col="${col - 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row + 2}"][data-col="${col + 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col - 2}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col + 2}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col + 2}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col - 2}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row - 2}"][data-col="${col - 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row - 2}"][data-col="${col + 1}"]`,
+        ),
+      );
     }
 
     const filteredCoveredSquares = coveredSquares.filter((coveredSquare) => {
