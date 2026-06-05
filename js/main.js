@@ -1305,7 +1305,7 @@ class Game2 {
       // Testing
       {
         color: "dark",
-        type: "knight",
+        type: "queen",
         file: "d",
         rank: "5",
       },
@@ -1328,6 +1328,7 @@ class Game2 {
 
       squareElement.setAttribute("data-type", piece.type);
       squareElement.setAttribute("data-color", piece.color);
+      squareElement.setAttribute("data-has-moved", false);
 
       squareElement.appendChild(pieceElement);
     });
@@ -1386,336 +1387,120 @@ class Game2 {
       }
     }
 
-    // Rook
-    if (type === "rook") {
-      // Rook-Dark
-      if (color === "dark") {
-        // Rook-Dark (Top)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row + offset}"][data-col="${col}"]`,
-          );
+    // Rook or Queen
+    if (type === "rook" || type === "queen") {
+      // Top
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset}"][data-col="${col}"]`,
+        );
 
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+        if (!possibleSquare) break;
 
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
+        coveredSquares.push(possibleSquare);
 
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-
-        // Rook-Dark (Right)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row}"][data-col="${col + offset}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
-
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-
-        // Rook-Dark (Bottom)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row - offset}"][data-col="${col}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
-
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-
-        // Rook-Dark (Left)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row}"][data-col="${col - offset}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
-
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
+        if (possibleSquare.dataset.type) break;
       }
 
-      // Rook-Light
-      if (color === "light") {
-        // Rook-Light (Top)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row + offset}"][data-col="${col}"]`,
-          );
+      // Right
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col + offset}"]`,
+        );
 
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
+        if (!possibleSquare) break;
 
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
+        coveredSquares.push(possibleSquare);
 
-            break;
-          }
+        if (possibleSquare.dataset.type) break;
+      }
 
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
+      // Bottom
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row - offset}"][data-col="${col}"]`,
+        );
 
-        // Rook-Light (Right)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row}"][data-col="${col + offset}"]`,
-          );
+        if (!possibleSquare) break;
 
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
+        coveredSquares.push(possibleSquare);
 
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
+        if (possibleSquare.dataset.type) break;
+      }
 
-            break;
-          }
+      // Left
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col - offset}"]`,
+        );
 
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
+        if (!possibleSquare) break;
 
-        // Rook-Light (Bottom)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row - offset}"][data-col="${col}"]`,
-          );
+        coveredSquares.push(possibleSquare);
 
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
-
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-
-        // Rook-Light (Left)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row}"][data-col="${col - offset}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
-
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
+        if (possibleSquare.dataset.type) break;
       }
     }
 
-    // Bishop
-    if (type === "bishop") {
-      // Bishop-Dark
-      if (color === "dark") {
-        // Bishop-Dark (Top-Left)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row + offset}"][data-col="${col - offset}"]`,
-          );
+    // Bishop or Queen
+    if (type === "bishop" || type === "queen") {
+      // Top-Left
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset}"][data-col="${col - offset}"]`,
+        );
 
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
+        if (!possibleSquare) break;
 
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
+        coveredSquares.push(possibleSquare);
 
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-
-        // Bishop-Dark (Top-Right)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row + offset}"][data-col="${col + offset}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
-
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-
-        // Bishop-Dark (Bottom-Left)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row - offset}"][data-col="${col - offset}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
-
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-
-        // Bishop-Dark (Bottom-Right)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row - offset}"][data-col="${col + offset}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "dark") break;
-
-          if (possibleSquare.dataset.color === "light") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
+        if (possibleSquare.dataset.type) break;
       }
 
-      // Bishop-Light
-      if (color === "light") {
-        // Bishop-Light (Top-Left)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row + offset}"][data-col="${col - offset}"]`,
-          );
+      // Top-Right
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset}"][data-col="${col + offset}"]`,
+        );
 
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
+        if (!possibleSquare) break;
 
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
+        coveredSquares.push(possibleSquare);
 
-            break;
-          }
+        if (possibleSquare.dataset.type) break;
+      }
 
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-        // Bishop-Light (Top-Right)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row + offset}"][data-col="${col + offset}"]`,
-          );
+      // Bottom-Left
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row - offset}"][data-col="${col - offset}"]`,
+        );
 
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
+        if (!possibleSquare) break;
 
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
+        coveredSquares.push(possibleSquare);
 
-            break;
-          }
+        if (possibleSquare.dataset.type) break;
+      }
 
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-        // Bishop-Light (Bottom-Left)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row - offset}"][data-col="${col - offset}"]`,
-          );
+      // Bottom-Right
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row - offset}"][data-col="${col + offset}"]`,
+        );
 
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
+        if (!possibleSquare) break;
 
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
+        coveredSquares.push(possibleSquare);
 
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
-        // Bishop-Light (Bottom-Right)
-        for (let offset = 1; offset < 8; offset++) {
-          const possibleSquare = document.querySelector(
-            `.Square[data-row="${row - offset}"][data-col="${col + offset}"]`,
-          );
-
-          if (!possibleSquare || possibleSquare.dataset.color === "light")
-            break;
-
-          if (possibleSquare.dataset.color === "dark") {
-            coveredSquares.push(possibleSquare);
-
-            break;
-          }
-
-          if (!possibleSquare.dataset.type) {
-            coveredSquares.push(possibleSquare);
-          }
-        }
+        if (possibleSquare.dataset.type) break;
       }
     }
 
     // Knight
     if (type === "knight") {
       // Push all 8 possible squares
+
       coveredSquares.push(
         document.querySelector(
           `.Square[data-row="${row + 2}"][data-col="${col - 1}"]`,
@@ -1765,36 +1550,159 @@ class Game2 {
       );
     }
 
+    // King
+    if (type === "king") {
+      // Push all 8 possible squares
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col - 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col + 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col - 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col + 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col - 1}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col}"]`,
+        ),
+      );
+
+      coveredSquares.push(
+        document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col + 1}"]`,
+        ),
+      );
+    }
+
     const filteredCoveredSquares = coveredSquares.filter((coveredSquare) => {
       return coveredSquare !== null;
     });
-    console.log(filteredCoveredSquares);
+  }
+
+  getValidSquares(file, rank) {
+    const squareElement = this.getSquare(file, rank);
+
+    const color = squareElement.dataset.color;
+    const type = squareElement.dataset.type;
+    const hasMoved = squareElement.dataset.hasMoved === "true";
+    const row = parseInt(squareElement.dataset.row);
+    const col = parseInt(squareElement.dataset.col);
+
+    const validSquareElements = [];
+
+    // Pawn
+    if (type === "pawn") {
+      // Pawn-Light
+      if (color === "light") {
+        validSquareElements.push(
+          document.querySelector(
+            `.Square[data-row="${row + 1}"][data-col="${col}"]`,
+          ),
+        );
+
+        // Pawn-Light first move
+        if (!hasMoved) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row + 2}"][data-col="${col}"]`,
+            ),
+          );
+        }
+      }
+
+      // Pawn-Dark
+      if (color === "light") {
+        validSquareElements.push(
+          document.querySelector(
+            `.Square[data-row="${row - 1}"][data-col="${col}"]`,
+          ),
+        );
+
+        // Pawn-Dark first move
+        if (!hasMoved) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row - 2}"][data-col="${col}"]`,
+            ),
+          );
+        }
+      }
+    }
+    //TODO: Push valid squares into array
+
+    return validSquareElements;
   }
 
   handleSquareClick(event) {
     const clickedSquareElement = event.currentTarget;
 
     this.resetValidSquares();
+    this.resetSelectedSquares();
 
     const file = clickedSquareElement.dataset.file;
     const rank = parseInt(clickedSquareElement.dataset.rank);
     const type = clickedSquareElement.dataset.type;
+    const color = clickedSquareElement.dataset.color;
 
-    if (!this.activeSquare && type) {
+    if (this.activeSquare && type && color === this.currentPlayer) {
+      if (clickedSquareElement === this.activeSquare) {
+        this.activeSquare = null;
+      } else {
+        this.activeSquare = clickedSquareElement;
+      }
+    } else if (type && color === this.currentPlayer) {
       this.activeSquare = clickedSquareElement;
-      this.getCoveredSquares(file, rank);
     } else {
       this.activeSquare = null;
     }
 
     if (this.activeSquare) {
       clickedSquareElement.classList.add("Square--Selected");
+
+      const validSquareElements = this.getValidSquares(file, rank);
+
+      console.log(validSquareElements);
     }
   }
 
   resetValidSquares() {
     this.squareElements.forEach((squareElement) => {
       squareElement.classList.remove("Square--Valid");
+    });
+  }
+
+  resetSelectedSquares() {
+    this.squareElements.forEach((squareElement) => {
+      squareElement.classList.remove("Square--Selected");
     });
   }
 
