@@ -1305,9 +1305,9 @@ class Game2 {
       // Testing
       {
         color: "light",
-        type: "rook",
-        file: "d",
-        rank: "5",
+        type: "knight",
+        file: "b",
+        rank: "6",
       },
     ];
 
@@ -1654,120 +1654,268 @@ class Game2 {
 
     // Rook
     if (type === "rook") {
-      // Rook
-      if (color === "light") {
-        // Rook (Top)
-        for (let offset = 1; offset < 8; offset++) {
-          const validSquare = document.querySelector(
-            `.Square[data-row="${row + offset}"][data-col="${col}"]`,
-          );
+      // Rook (Top)
 
-          if (!validSquare) break;
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset}"][data-col="${col}"]`,
+        );
 
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color === this.currentPlayer
-          )
-            break;
+        if (!possibleSquare) break;
 
-          if (!validSquare.dataset.type) {
-            validSquareElements.push(validSquare);
-          }
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
 
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color !== this.currentPlayer
-          ) {
-            validSquareElements.push(validSquare);
-
-            break;
-          }
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
         }
 
-        //Rook (Right)
-        for (let offset = 1; offset < 8; offset++) {
-          const validSquare = document.querySelector(
-            `.Square[data-row="${row}"][data-col="${col + offset}"]`,
-          );
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
 
-          if (!validSquare) break;
-
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color === this.currentPlayer
-          )
-            break;
-
-          if (!validSquare.dataset.type) {
-            validSquareElements.push(validSquare);
-          }
-
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color !== this.currentPlayer
-          ) {
-            validSquareElements.push(validSquare);
-
-            break;
-          }
-        }
-
-        // Rook (Bottom)
-        for (let offset = 1; offset < 8; offset++) {
-          const validSquare = document.querySelector(
-            `.Square[data-row="${row - offset}"][data-col="${col}"]`,
-          );
-
-          if (!validSquare) break;
-
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color === this.currentPlayer
-          )
-            break;
-
-          if (!validSquare.dataset.type) {
-            validSquareElements.push(validSquare);
-          }
-
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color !== this.currentPlayer
-          ) {
-            validSquareElements.push(validSquare);
-
-            break;
-          }
-        }
-
-        // Rook (Left)
-        for (let offset = 1; offset < 8; offset++) {
-          const validSquare = document.querySelector(
-            `.Square[data-row="${row}"][data-col="${col - offset}"]`,
-          );
-
-          if (!validSquare) break;
-
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color === this.currentPlayer
-          )
-            break;
-
-          if (!validSquare.dataset.type) {
-            validSquareElements.push(validSquare);
-          }
-
-          if (
-            validSquare.dataset.type &&
-            validSquare.dataset.color !== this.currentPlayer
-          ) {
-            validSquareElements.push(validSquare);
-
-            break;
-          }
+          break;
         }
       }
+
+      //Rook (Right)
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col + offset}"]`,
+        );
+
+        if (!possibleSquare) break;
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
+
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
+        }
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+
+          break;
+        }
+      }
+
+      // Rook (Bottom)
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row - offset}"][data-col="${col}"]`,
+        );
+
+        if (!possibleSquare) break;
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
+
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
+        }
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+
+          break;
+        }
+      }
+
+      // Rook (Left)
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col - offset}"]`,
+        );
+
+        if (!possibleSquare) break;
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
+
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
+        }
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+
+          break;
+        }
+      }
+    }
+
+    // Bishop
+    if (type === "bishop") {
+      // Bishop (Top-Left)
+
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset}"][data-col="${col - offset}"]`,
+        );
+
+        if (!possibleSquare) break;
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
+
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
+        }
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+
+          break;
+        }
+      }
+
+      // Bishop (Top-Right)
+
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset}"][data-col="${col + offset}"]`,
+        );
+
+        if (!possibleSquare) break;
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
+
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
+        }
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+
+          break;
+        }
+      }
+
+      // Bishop (Bottom-Left)
+
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row - offset}"][data-col="${col - offset}"]`,
+        );
+
+        if (!possibleSquare) break;
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
+
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
+        }
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+
+          break;
+        }
+      }
+
+      // Bishop (Bottom-Right)
+
+      for (let offset = 1; offset < 8; offset++) {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row - offset}"][data-col="${col + offset}"]`,
+        );
+
+        if (!possibleSquare) break;
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color === this.currentPlayer
+        )
+          break;
+
+        if (!possibleSquare.dataset.type) {
+          validSquareElements.push(possibleSquare);
+        }
+
+        if (
+          possibleSquare.dataset.type &&
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+
+          break;
+        }
+      }
+    }
+
+    // Knight
+    if (type === "knight") {
+      // Check all 8 possible squares
+
+      const offsets = [
+        { row: 2, col: -1 },
+        { row: 2, col: 1 },
+        { row: 1, col: -2 },
+        { row: 1, col: 2 },
+        { row: -1, col: -2 },
+        { row: -1, col: 2 },
+        { row: -2, col: -1 },
+        { row: -2, col: 1 },
+      ];
+
+      offsets.forEach((offset) => {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset.row}"][data-col="${col + offset.col}"]`,
+        );
+
+        if (!possibleSquare) return;
+
+        if (
+          !possibleSquare.dataset.type ||
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+        }
+      });
     }
     //TODO: Push valid squares into array
 
