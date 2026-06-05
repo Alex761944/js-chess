@@ -1305,7 +1305,7 @@ class Game2 {
       // Testing
       {
         color: "light",
-        type: "knight",
+        type: "king",
         file: "b",
         rank: "6",
       },
@@ -1900,6 +1900,37 @@ class Game2 {
         { row: -1, col: 2 },
         { row: -2, col: -1 },
         { row: -2, col: 1 },
+      ];
+
+      offsets.forEach((offset) => {
+        const possibleSquare = document.querySelector(
+          `.Square[data-row="${row + offset.row}"][data-col="${col + offset.col}"]`,
+        );
+
+        if (!possibleSquare) return;
+
+        if (
+          !possibleSquare.dataset.type ||
+          possibleSquare.dataset.color !== this.currentPlayer
+        ) {
+          validSquareElements.push(possibleSquare);
+        }
+      });
+    }
+
+    // King
+    if (type === "king") {
+      // Check all 8 possible squares
+
+      const offsets = [
+        { row: 1, col: -1 },
+        { row: 1, col: 0 },
+        { row: 1, col: 1 },
+        { row: 0, col: -1 },
+        { row: 0, col: 1 },
+        { row: -1, col: -1 },
+        { row: -1, col: 0 },
+        { row: -1, col: 1 },
       ];
 
       offsets.forEach((offset) => {
