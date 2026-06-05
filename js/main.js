@@ -1305,7 +1305,7 @@ class Game2 {
       // Testing
       {
         color: "light",
-        type: "king",
+        type: "queen",
         file: "b",
         rank: "6",
       },
@@ -1652,9 +1652,9 @@ class Game2 {
       }
     }
 
-    // Rook
-    if (type === "rook") {
-      // Rook (Top)
+    // Rook or Queen
+    if (type === "rook" || "queen") {
+      // Rook or Queen (Top)
 
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
@@ -1711,7 +1711,7 @@ class Game2 {
         }
       }
 
-      // Rook (Bottom)
+      // Rook or Queen (Bottom)
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
           `.Square[data-row="${row - offset}"][data-col="${col}"]`,
@@ -1739,7 +1739,7 @@ class Game2 {
         }
       }
 
-      // Rook (Left)
+      // Rook or Queen (Left)
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
           `.Square[data-row="${row}"][data-col="${col - offset}"]`,
@@ -1768,9 +1768,9 @@ class Game2 {
       }
     }
 
-    // Bishop
-    if (type === "bishop") {
-      // Bishop (Top-Left)
+    // Bishop or Queen
+    if (type === "bishop" || "queen") {
+      // Bishop or Queen (Top-Left)
 
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
@@ -1799,7 +1799,7 @@ class Game2 {
         }
       }
 
-      // Bishop (Top-Right)
+      // Bishop or Queen (Top-Right)
 
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
@@ -1828,7 +1828,7 @@ class Game2 {
         }
       }
 
-      // Bishop (Bottom-Left)
+      // Bishop or Queen (Bottom-Left)
 
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
@@ -1857,7 +1857,7 @@ class Game2 {
         }
       }
 
-      // Bishop (Bottom-Right)
+      // Bishop or Queen (Bottom-Right)
 
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
@@ -1948,7 +1948,6 @@ class Game2 {
         }
       });
     }
-    //TODO: Push valid squares into array
 
     return validSquareElements;
   }
