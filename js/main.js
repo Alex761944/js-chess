@@ -1634,7 +1634,7 @@ class Game2 {
       }
 
       // Pawn-Dark
-      if (color === "light") {
+      if (color === "dark") {
         validSquareElements.push(
           document.querySelector(
             `.Square[data-row="${row - 1}"][data-col="${col}"]`,
@@ -1653,7 +1653,7 @@ class Game2 {
     }
 
     // Rook or Queen
-    if (type === "rook" || "queen") {
+    if (type === "rook" || type === "queen") {
       // Rook or Queen (Top)
 
       for (let offset = 1; offset < 8; offset++) {
@@ -1769,7 +1769,7 @@ class Game2 {
     }
 
     // Bishop or Queen
-    if (type === "bishop" || "queen") {
+    if (type === "bishop" || type === "queen") {
       // Bishop or Queen (Top-Left)
 
       for (let offset = 1; offset < 8; offset++) {
@@ -1977,11 +1977,13 @@ class Game2 {
 
     if (this.activeSquare) {
       clickedSquareElement.classList.add("Square--Selected");
-
-      const validSquareElements = this.getValidSquares(file, rank);
-
-      console.log(validSquareElements);
     }
+
+    const validSquareElements = this.getValidSquares(file, rank);
+
+    validSquareElements.forEach((validSquareElement) => {
+      validSquareElement.classList.add("Square--Valid");
+    });
   }
 
   resetValidSquares() {
