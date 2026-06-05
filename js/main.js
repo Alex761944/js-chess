@@ -1304,15 +1304,9 @@ class Game2 {
       },
       // Testing
       {
-        color: "dark",
-        type: "queen",
-        file: "d",
-        rank: "5",
-      },
-      {
         color: "light",
-        type: "pawn",
-        file: "b",
+        type: "rook",
+        file: "d",
         rank: "5",
       },
     ];
@@ -1654,6 +1648,124 @@ class Game2 {
               `.Square[data-row="${row - 2}"][data-col="${col}"]`,
             ),
           );
+        }
+      }
+    }
+
+    // Rook
+    if (type === "rook") {
+      // Rook
+      if (color === "light") {
+        // Rook (Top)
+        for (let offset = 1; offset < 8; offset++) {
+          const validSquare = document.querySelector(
+            `.Square[data-row="${row + offset}"][data-col="${col}"]`,
+          );
+
+          if (!validSquare) break;
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color === this.currentPlayer
+          )
+            break;
+
+          if (!validSquare.dataset.type) {
+            validSquareElements.push(validSquare);
+          }
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color !== this.currentPlayer
+          ) {
+            validSquareElements.push(validSquare);
+
+            break;
+          }
+        }
+
+        //Rook (Right)
+        for (let offset = 1; offset < 8; offset++) {
+          const validSquare = document.querySelector(
+            `.Square[data-row="${row}"][data-col="${col + offset}"]`,
+          );
+
+          if (!validSquare) break;
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color === this.currentPlayer
+          )
+            break;
+
+          if (!validSquare.dataset.type) {
+            validSquareElements.push(validSquare);
+          }
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color !== this.currentPlayer
+          ) {
+            validSquareElements.push(validSquare);
+
+            break;
+          }
+        }
+
+        // Rook (Bottom)
+        for (let offset = 1; offset < 8; offset++) {
+          const validSquare = document.querySelector(
+            `.Square[data-row="${row - offset}"][data-col="${col}"]`,
+          );
+
+          if (!validSquare) break;
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color === this.currentPlayer
+          )
+            break;
+
+          if (!validSquare.dataset.type) {
+            validSquareElements.push(validSquare);
+          }
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color !== this.currentPlayer
+          ) {
+            validSquareElements.push(validSquare);
+
+            break;
+          }
+        }
+
+        // Rook (Left)
+        for (let offset = 1; offset < 8; offset++) {
+          const validSquare = document.querySelector(
+            `.Square[data-row="${row}"][data-col="${col - offset}"]`,
+          );
+
+          if (!validSquare) break;
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color === this.currentPlayer
+          )
+            break;
+
+          if (!validSquare.dataset.type) {
+            validSquareElements.push(validSquare);
+          }
+
+          if (
+            validSquare.dataset.type &&
+            validSquare.dataset.color !== this.currentPlayer
+          ) {
+            validSquareElements.push(validSquare);
+
+            break;
+          }
         }
       }
     }
