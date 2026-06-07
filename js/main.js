@@ -236,20 +236,20 @@ class Game {
       {
         color: "dark",
         type: "queen",
-        file: "d",
-        rank: "4",
+        file: "b",
+        rank: "6",
       },
       {
-        color: "light",
-        type: "queen",
+        color: "dark",
+        type: "pawn",
         file: "b",
         rank: "4",
       },
       {
         color: "light",
         type: "king",
-        file: "a",
-        rank: "4",
+        file: "b",
+        rank: "3",
       },
     ];
 
@@ -687,8 +687,6 @@ class Game {
         )
           break;
 
-        //TODO: Figure out why b3 gets pushed in validSquares
-
         if (
           !possibleSquare.dataset.type &&
           !this.resultsInCheck({ row, col }, { row: row - offset, col }, color)
@@ -721,13 +719,17 @@ class Game {
         )
           break;
 
-        if (!possibleSquare.dataset.type) {
+        if (
+          !possibleSquare.dataset.type &&
+          !this.resultsInCheck({ row, col }, { row, col: col - offset }, color)
+        ) {
           validSquareElements.push(possibleSquare);
         }
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer
+          possibleSquare.dataset.color !== this.currentPlayer &&
+          !this.resultsInCheck({ row, col }, { row, col: col - offset }, color)
         ) {
           validSquareElements.push(possibleSquare);
 
@@ -753,13 +755,25 @@ class Game {
         )
           break;
 
-        if (!possibleSquare.dataset.type) {
+        if (
+          !possibleSquare.dataset.type &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + offset, col: col - offset },
+            color,
+          )
+        ) {
           validSquareElements.push(possibleSquare);
         }
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer
+          possibleSquare.dataset.color !== this.currentPlayer &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + offset, col: col - offset },
+            color,
+          )
         ) {
           validSquareElements.push(possibleSquare);
 
@@ -782,13 +796,25 @@ class Game {
         )
           break;
 
-        if (!possibleSquare.dataset.type) {
+        if (
+          !possibleSquare.dataset.type &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + offset, col: col + offset },
+            color,
+          )
+        ) {
           validSquareElements.push(possibleSquare);
         }
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer
+          possibleSquare.dataset.color !== this.currentPlayer &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + offset, col: col + offset },
+            color,
+          )
         ) {
           validSquareElements.push(possibleSquare);
 
@@ -811,13 +837,25 @@ class Game {
         )
           break;
 
-        if (!possibleSquare.dataset.type) {
+        if (
+          !possibleSquare.dataset.type &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row - offset, col: col - offset },
+            color,
+          )
+        ) {
           validSquareElements.push(possibleSquare);
         }
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer
+          possibleSquare.dataset.color !== this.currentPlayer &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row - offset, col: col - offset },
+            color,
+          )
         ) {
           validSquareElements.push(possibleSquare);
 
@@ -840,13 +878,25 @@ class Game {
         )
           break;
 
-        if (!possibleSquare.dataset.type) {
+        if (
+          !possibleSquare.dataset.type &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row - offset, col: col + offset },
+            color,
+          )
+        ) {
           validSquareElements.push(possibleSquare);
         }
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer
+          possibleSquare.dataset.color !== this.currentPlayer &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row - offset, col: col + offset },
+            color,
+          )
         ) {
           validSquareElements.push(possibleSquare);
 
@@ -878,8 +928,13 @@ class Game {
         if (!possibleSquare) return;
 
         if (
-          !possibleSquare.dataset.type ||
-          possibleSquare.dataset.color !== this.currentPlayer
+          (!possibleSquare.dataset.type ||
+            possibleSquare.dataset.color !== this.currentPlayer) &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + offset.row, col: col + offset.col },
+            color,
+          )
         ) {
           validSquareElements.push(possibleSquare);
         }
@@ -909,8 +964,13 @@ class Game {
         if (!possibleSquare) return;
 
         if (
-          !possibleSquare.dataset.type ||
-          possibleSquare.dataset.color !== this.currentPlayer
+          (!possibleSquare.dataset.type ||
+            possibleSquare.dataset.color !== this.currentPlayer) &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + offset.row, col: col + offset.col },
+            color,
+          )
         ) {
           validSquareElements.push(possibleSquare);
         }
