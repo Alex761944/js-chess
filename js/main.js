@@ -1,6 +1,7 @@
 class Game {
   constructor() {
     this.activeSquare = null;
+    this.moves = 0;
     this.currentPlayer = "light";
 
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -210,7 +211,7 @@ class Game {
       },
       {
         color: "light",
-        type: "pawn",
+        type: "king",
         file: "e",
         rank: "1",
       },
@@ -235,21 +236,15 @@ class Game {
       // Testing
       {
         color: "dark",
-        type: "queen",
-        file: "b",
-        rank: "6",
-      },
-      {
-        color: "dark",
         type: "pawn",
         file: "b",
-        rank: "4",
+        rank: "3",
       },
       {
         color: "light",
-        type: "king",
-        file: "b",
-        rank: "3",
+        type: "pawn",
+        file: "f",
+        rank: "6",
       },
     ];
 
@@ -569,6 +564,32 @@ class Game {
           );
         }
 
+        // Pawn-Light capture top left
+        const hasTopLeftOpponent = !!document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col - 1}"][data-color="dark"]`,
+        );
+
+        if (hasTopLeftOpponent) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row + 1}"][data-col="${col - 1}"]`,
+            ),
+          );
+        }
+
+        // Pawn-Light capture top right
+        const hasTopRightOpponent = !!document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col + 1}"][data-color="dark"]`,
+        );
+
+        if (hasTopRightOpponent) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row + 1}"][data-col="${col + 1}"]`,
+            ),
+          );
+        }
+
         // Pawn-Light possible first move
         if (
           !hasMoved &&
@@ -577,6 +598,47 @@ class Game {
           validSquareElements.push(
             document.querySelector(
               `.Square[data-row="${row + 2}"][data-col="${col}"]`,
+            ),
+          );
+        }
+
+        // Pawn-Light en passant
+        const hasDarkPawnRight = !!document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col + 1}"][data-type="pawn"][data-color="dark"]`,
+        );
+
+        if (
+          rank === 5 &&
+          hasDarkPawnRight &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + 1, col: col + 1 },
+            color,
+          )
+        ) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row + 1}"][data-col="${col + 1}"]`,
+            ),
+          );
+        }
+
+        const hasDarkPawnLeft = !!document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col - 1}"][data-type="pawn"][data-color="dark"]`,
+        );
+
+        if (
+          rank === 5 &&
+          hasDarkPawnLeft &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row + 1, col: col - 1 },
+            color,
+          )
+        ) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row + 1}"][data-col="${col - 1}"]`,
             ),
           );
         }
@@ -592,7 +654,33 @@ class Game {
           );
         }
 
-        // Pawn-Dark first move
+        // Pawn-Dark capture bottom left
+        const hasBottomLeftOpponent = !!document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col - 1}"][data-color="light"]`,
+        );
+
+        if (hasBottomLeftOpponent) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row - 1}"][data-col="${col - 1}"]`,
+            ),
+          );
+        }
+
+        // Pawn-Dark capture bottom right
+        const hasBottomRightOpponent = !!document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col + 1}"][data-color="light"]`,
+        );
+
+        if (hasBottomRightOpponent) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row - 1}"][data-col="${col + 1}"]`,
+            ),
+          );
+        }
+
+        // Pawn-Dark possible first move
         if (
           !hasMoved &&
           !this.resultsInCheck({ row, col }, { row: row - 2, col }, color)
@@ -600,6 +688,47 @@ class Game {
           validSquareElements.push(
             document.querySelector(
               `.Square[data-row="${row - 2}"][data-col="${col}"]`,
+            ),
+          );
+        }
+
+        // Pawn-Dark en passant
+        const hasLightPawnRight = !!document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col + 1}"][data-type="pawn"][data-color="light"]`,
+        );
+
+        if (
+          rank === 4 &&
+          hasLightPawnRight &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row - 1, col: col + 1 },
+            color,
+          )
+        ) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row - 1}"][data-col="${col + 1}"]`,
+            ),
+          );
+        }
+
+        const hasLightPawnLeft = !!document.querySelector(
+          `.Square[data-row="${row}"][data-col="${col - 1}"][data-type="pawn"][data-color="light"]`,
+        );
+
+        if (
+          rank === 4 &&
+          hasLightPawnLeft &&
+          !this.resultsInCheck(
+            { row, col },
+            { row: row - 1, col: col - 1 },
+            color,
+          )
+        ) {
+          validSquareElements.push(
+            document.querySelector(
+              `.Square[data-row="${row - 1}"][data-col="${col - 1}"]`,
             ),
           );
         }
@@ -941,6 +1070,7 @@ class Game {
       });
     }
 
+    //TODO: Add long and short castle
     // King
     if (type === "king") {
       // Check all 8 possible squares
@@ -997,6 +1127,30 @@ class Game {
       } else {
         this.activeSquare = clickedSquareElement;
       }
+    } else if (
+      this.activeSquare &&
+      clickedSquareElement !== this.activeSquare
+    ) {
+      const validSquareElements = this.getValidSquares(
+        this.activeSquare.dataset.file,
+        this.activeSquare.dataset.rank,
+      );
+
+      if (validSquareElements.includes(clickedSquareElement)) {
+        this.executeMove(
+          {
+            file: this.activeSquare.dataset.file,
+            rank: this.activeSquare.dataset.rank,
+          },
+          { file, rank },
+        );
+
+        this.moves++;
+
+        this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
+      }
+
+      this.activeSquare = null;
     } else if (type && color === this.currentPlayer) {
       this.activeSquare = clickedSquareElement;
     } else {
@@ -1005,21 +1159,48 @@ class Game {
 
     if (this.activeSquare) {
       clickedSquareElement.classList.add("Square--Selected");
-    }
 
-    const validSquareElements = this.getValidSquares(file, rank);
+      const validSquareElements = this.getValidSquares(file, rank);
 
-    validSquareElements.forEach((validSquareElement) => {
-      validSquareElement.classList.add("Square--Valid");
-    });
-
-    if (this.activeSquare !== clickedSquareElement) {
-      this.executeMove();
+      validSquareElements.forEach((validSquareElement) => {
+        validSquareElement.classList.add("Square--Valid");
+      });
     }
   }
 
   executeMove(origin, destination) {
-    //TODO: Move piece
+    const originSquareElement = document.querySelector(
+      `.Square[data-file="${origin.file}"][data-rank="${origin.rank}"]`,
+    );
+
+    const destinationSquareElement = document.querySelector(
+      `.Square[data-file="${destination.file}"][data-rank="${destination.rank}"]`,
+    );
+
+    destinationSquareElement.setAttribute(
+      "data-type",
+      originSquareElement.dataset.type,
+    );
+    destinationSquareElement.setAttribute(
+      "data-color",
+      originSquareElement.dataset.color,
+    );
+    destinationSquareElement.setAttribute("data-has-moved", "true");
+
+    originSquareElement.removeAttribute("data-type");
+    originSquareElement.removeAttribute("data-color");
+    originSquareElement.removeAttribute("data-has-moved");
+
+    const destinationImageElement =
+      destinationSquareElement.querySelector("img");
+
+    if (destinationImageElement) {
+      destinationImageElement.remove();
+    }
+
+    const originImageElement = originSquareElement.querySelector("img");
+
+    destinationSquareElement.appendChild(originImageElement);
   }
 
   isInCheck(color) {
