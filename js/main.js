@@ -1525,7 +1525,15 @@ class Game {
           !possibleSquare.dataset.type &&
           !this.resultsInCheck({ row, col }, { row: row + offset, col }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col },
+              },
+            ],
+          });
         }
 
         if (
@@ -1533,7 +1541,15 @@ class Game {
           possibleSquare.dataset.color !== this.currentPlayer &&
           !this.resultsInCheck({ row, col }, { row: row + offset, col }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col },
+              },
+            ],
+          });
 
           break;
         }
@@ -1557,7 +1573,15 @@ class Game {
           !possibleSquare.dataset.type &&
           !this.resultsInCheck({ row, col }, { row, col: col + offset }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row, col: col + offset },
+              },
+            ],
+          });
         }
 
         if (
@@ -1565,7 +1589,15 @@ class Game {
           possibleSquare.dataset.color !== this.currentPlayer &&
           !this.resultsInCheck({ row, col }, { row, col: col + offset }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col },
+              },
+            ],
+          });
 
           break;
         }
@@ -1589,7 +1621,15 @@ class Game {
           !possibleSquare.dataset.type &&
           !this.resultsInCheck({ row, col }, { row: row - offset, col }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col },
+              },
+            ],
+          });
         }
 
         if (
@@ -1597,7 +1637,15 @@ class Game {
           possibleSquare.dataset.color !== this.currentPlayer &&
           !this.resultsInCheck({ row, col }, { row: row - offset, col }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col },
+              },
+            ],
+          });
 
           break;
         }
@@ -1621,7 +1669,15 @@ class Game {
           !possibleSquare.dataset.type &&
           !this.resultsInCheck({ row, col }, { row, col: col - offset }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row, col: col - offset },
+              },
+            ],
+          });
         }
 
         if (
@@ -1629,7 +1685,15 @@ class Game {
           possibleSquare.dataset.color !== this.currentPlayer &&
           !this.resultsInCheck({ row, col }, { row, col: col - offset }, color)
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row, col: col - offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1661,7 +1725,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col - offset },
+              },
+            ],
+          });
         }
 
         if (
@@ -1673,7 +1745,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col - offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1702,7 +1782,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col + offset },
+              },
+            ],
+          });
         }
 
         if (
@@ -1714,7 +1802,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col + offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1755,7 +1851,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col: col - offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1784,7 +1888,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col: col + offset },
+              },
+            ],
+          });
         }
 
         if (
@@ -1796,7 +1908,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col: col + offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1834,7 +1954,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col + offset },
+              },
+            ],
+          });
         }
       });
     }
@@ -1870,7 +1998,15 @@ class Game {
             color,
           )
         ) {
-          validMoves.push(possibleSquare);
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col + offset },
+              },
+            ],
+          });
         }
       });
 
@@ -1910,9 +2046,6 @@ class Game {
           shortRookElement.dataset.color,
         )
       ) {
-        validMoves.push(
-          document.querySelector(`.Square[data-row="${row}"][data-col="6"]`),
-        );
         validMoves.push({
           validSquare: document.querySelector(
             `.Square[data-row="${row}"][data-col="6"]`,
@@ -1929,7 +2062,7 @@ class Game {
               },
               destination: {
                 row: parseInt(shortRookElement.dataset.row),
-                col: parseInt(shortRookElement.dataset.col - 2),
+                col: parseInt(shortRookElement.dataset.col) - 2,
               },
             },
           ],
@@ -1965,19 +2098,37 @@ class Game {
         !this.resultsInCheck({ row, col }, { row, col: col - 2 }, color) &&
         !this.resultsInCheck(
           {
-            row: longRookElement.dataset.row,
-            col: longRookElement.dataset.col,
+            row: parseInt(longRookElement.dataset.row),
+            col: parseInt(longRookElement.dataset.col),
           },
           {
-            row: longRookElement.dataset.row,
+            row: parseInt(longRookElement.dataset.row),
             col: parseInt(longRookElement.dataset.col) + 3,
           },
           longRookElement.dataset.color,
         )
       ) {
-        validMoves.push(
-          document.querySelector(`.Square[data-row="${row}"][data-col="2"]`),
-        );
+        validMoves.push({
+          validSquare: document.querySelector(
+            `.Square[data-row="${row}"][data-col="2"]`,
+          ),
+          squareUpdates: [
+            {
+              origin: { row, col },
+              destination: { row, col: 2 },
+            },
+            {
+              origin: {
+                row: parseInt(longRookElement.dataset.row),
+                col: parseInt(longRookElement.dataset.col),
+              },
+              destination: {
+                row: parseInt(longRookElement.dataset.row),
+                col: parseInt(longRookElement.dataset.col) + 3,
+              },
+            },
+          ],
+        });
       }
     }
 
