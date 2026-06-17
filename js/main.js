@@ -1,4 +1,3 @@
-// TODO: Add promotion to queen
 class Game {
   constructor() {
     this.activeSquare = null;
@@ -554,7 +553,6 @@ class Game {
     const validMoves = [];
 
     // Pawn
-    // TODO: Promotion by taking opponent piece
     if (type === "pawn") {
       // Pawn-Light
       if (color === "light") {
@@ -1858,11 +1856,41 @@ class Game {
   }
 
   isCheckmate(color) {
-    // TODO: Return boolean if provided color is currently in checkmate. (Color currenty in check and color currently no valid moves)
+    if (!this.isInCheck(color)) return false;
+
+    const ownPieces = document.querySelectorAll(
+      `.Square[data-color="${color}"]`,
+    );
+
+    for (const ownPiece of ownPieces) {
+      const validMoves = this.getValidMoves(
+        ownPiece.dataset.file,
+        parseInt(ownPiece.dataset.rank),
+      );
+
+      if (validMoves.length > 0) return false;
+    }
+
+    return true;
   }
 
-  isStalemate() {
-    // TODO: Return boolean if stalemate reached
+  isStalemate(color) {
+    if (this.isInCheck(color)) return false;
+
+    const ownPieces = document.querySelectorAll(
+      `.Square[data-color="${color}"]`,
+    );
+
+    for (const ownPiece of ownPieces) {
+      const validMoves = this.getValidMoves(
+        ownPiece.dataset.file,
+        parseInt(ownPiece.dataset.rank),
+      );
+
+      if (validMoves.length > 0) return false;
+    }
+
+    return true;
   }
 
   highlightCheckedKing(color) {
