@@ -1,3 +1,4 @@
+// TODO: Clean Square--Checked after every move
 class Game {
   constructor() {
     this.activeSquare = null;
@@ -41,12 +42,12 @@ class Game {
 
   placePieces() {
     const pieces = [
-      // {
-      //   color: "dark",
-      //   type: "rook",
-      //   file: "a",
-      //   rank: "8",
-      // },
+      {
+        color: "dark",
+        type: "rook",
+        file: "a",
+        rank: "8",
+      },
       {
         color: "dark",
         type: "knight",
@@ -90,10 +91,10 @@ class Game {
         rank: "8",
       },
       {
-        color: "light",
+        color: "dark",
         type: "pawn",
         file: "a",
-        rank: "5",
+        rank: "7",
       },
       {
         color: "dark",
@@ -556,7 +557,16 @@ class Game {
     if (type === "pawn") {
       // Pawn-Light
       if (color === "light") {
+        const oneStepSquareElement = document.querySelector(
+          `.Square[data-row="${row + 1}"][data-col="${col}"]`,
+        );
+        const twoStepSquareElement = document.querySelector(
+          `.Square[data-row="${row + 2}"][data-col="${col}"]`,
+        );
+
         if (
+          oneStepSquareElement &&
+          !oneStepSquareElement.dataset.type &&
           !this.resultsInCheck(
             [
               {
@@ -568,9 +578,7 @@ class Game {
           )
         ) {
           validMoves.push({
-            validSquare: document.querySelector(
-              `.Square[data-row="${row + 1}"][data-col="${col}"]`,
-            ),
+            validSquare: oneStepSquareElement,
             squareUpdates: [
               {
                 origin: { row, col },
@@ -649,6 +657,9 @@ class Game {
         // Pawn-Light possible first move
         if (
           !hasMoved &&
+          twoStepSquareElement &&
+          !oneStepSquareElement.dataset.type &&
+          !twoStepSquareElement.dataset.type &&
           !this.resultsInCheck(
             [
               {
@@ -660,9 +671,7 @@ class Game {
           )
         ) {
           validMoves.push({
-            validSquare: document.querySelector(
-              `.Square[data-row="${row + 2}"][data-col="${col}"]`,
-            ),
+            validSquare: twoStepSquareElement,
             squareUpdates: [
               {
                 origin: { row, col },
@@ -752,7 +761,16 @@ class Game {
 
       // Pawn-Dark
       if (color === "dark") {
+        const oneStepSquareElement = document.querySelector(
+          `.Square[data-row="${row - 1}"][data-col="${col}"]`,
+        );
+        const twoStepSquareElement = document.querySelector(
+          `.Square[data-row="${row - 2}"][data-col="${col}"]`,
+        );
+
         if (
+          oneStepSquareElement &&
+          !oneStepSquareElement.dataset.type &&
           !this.resultsInCheck(
             [
               {
@@ -764,9 +782,7 @@ class Game {
           )
         ) {
           validMoves.push({
-            validSquare: document.querySelector(
-              `.Square[data-row="${row - 1}"][data-col="${col}"]`,
-            ),
+            validSquare: oneStepSquareElement,
             squareUpdates: [
               {
                 origin: { row, col },
@@ -823,6 +839,10 @@ class Game {
         // Pawn-Dark possible first move
         if (
           !hasMoved &&
+          oneStepSquareElement &&
+          !oneStepSquareElement.dataset.type &&
+          twoStepSquareElement &&
+          !twoStepSquareElement.dataset.type &&
           !this.resultsInCheck(
             [
               {
@@ -834,9 +854,7 @@ class Game {
           )
         ) {
           validMoves.push({
-            validSquare: document.querySelector(
-              `.Square[data-row="${row - 2}"][data-col="${col}"]`,
-            ),
+            validSquare: twoStepSquareElement,
             squareUpdates: [
               {
                 origin: { row, col },
@@ -1749,6 +1767,8 @@ class Game {
           console.log("checkmate happened");
         } else if (this.isInCheck(this.currentPlayer)) {
           this.highlightCheckedKing(this.currentPlayer);
+        } else if (this.isStalemate(this.currentPlayer)) {
+          console.log("stalemate happened");
         }
       }
 
