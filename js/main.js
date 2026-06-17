@@ -1,3 +1,4 @@
+// TODO: Add promotion to queen
 class Game {
   constructor() {
     this.activeSquare = null;
@@ -41,12 +42,12 @@ class Game {
 
   placePieces() {
     const pieces = [
-      {
-        color: "dark",
-        type: "rook",
-        file: "a",
-        rank: "8",
-      },
+      // {
+      //   color: "dark",
+      //   type: "rook",
+      //   file: "a",
+      //   rank: "8",
+      // },
       {
         color: "dark",
         type: "knight",
@@ -90,10 +91,10 @@ class Game {
         rank: "8",
       },
       {
-        color: "dark",
+        color: "light",
         type: "pawn",
         file: "a",
-        rank: "7",
+        rank: "5",
       },
       {
         color: "dark",
@@ -236,13 +237,13 @@ class Game {
       // Testing
       {
         color: "dark",
-        type: "pawn",
-        file: "c",
+        type: "bishop",
+        file: "b",
         rank: "4",
       },
       {
         color: "light",
-        type: "pawn",
+        type: "bishop",
         file: "f",
         rank: "5",
       },
@@ -553,11 +554,12 @@ class Game {
     const validMoves = [];
 
     // Pawn
+    // TODO: Promotion by taking opponent piece
     if (type === "pawn") {
       // Pawn-Light
       if (color === "light") {
         if (
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -575,6 +577,8 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col },
+                type: row === 6 ? "queen" : null,
+                isPromotion: true,
               },
             ],
           });
@@ -587,7 +591,7 @@ class Game {
 
         if (
           hasTopLeftOpponent &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -605,6 +609,8 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col: col - 1 },
+                type: row === 6 ? "queen" : null,
+                isPromotion: true,
               },
             ],
           });
@@ -617,7 +623,7 @@ class Game {
 
         if (
           hasTopRightOpponent &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -635,6 +641,8 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col: col + 1 },
+                type: row === 6 ? "queen" : null,
+                isPromotion: true,
               },
             ],
           });
@@ -643,7 +651,7 @@ class Game {
         // Pawn-Light possible first move
         if (
           !hasMoved &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -674,7 +682,7 @@ class Game {
         if (
           rank === 5 &&
           hasDarkPawnRight &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -712,7 +720,7 @@ class Game {
         if (
           rank === 5 &&
           hasDarkPawnLeft &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -747,7 +755,7 @@ class Game {
       // Pawn-Dark
       if (color === "dark") {
         if (
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -765,6 +773,8 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col },
+                type: row === 1 ? "queen" : null,
+                isPromotion: true,
               },
             ],
           });
@@ -784,6 +794,8 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col - 1 },
+                type: row === 1 ? "queen" : null,
+                isPromotion: true,
               },
             ],
           });
@@ -803,6 +815,8 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col + 1 },
+                type: row === 1 ? "queen" : null,
+                isPromotion: true,
               },
             ],
           });
@@ -811,7 +825,7 @@ class Game {
         // Pawn-Dark possible first move
         if (
           !hasMoved &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -834,7 +848,7 @@ class Game {
           });
         }
 
-        // Pawn-Dark en passant
+        // Pawn-Dark en passant (right)
         const hasLightPawnRight = !!document.querySelector(
           `.Square[data-row="${row}"][data-col="${col + 1}"][data-type="pawn"][data-color="light"]`,
         );
@@ -842,7 +856,7 @@ class Game {
         if (
           rank === 4 &&
           hasLightPawnRight &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -873,6 +887,7 @@ class Game {
           });
         }
 
+        // Pawn-Dark en passant (left)
         const hasLightPawnLeft = !!document.querySelector(
           `.Square[data-row="${row}"][data-col="${col - 1}"][data-type="pawn"][data-color="light"]`,
         );
@@ -880,7 +895,7 @@ class Game {
         if (
           rank === 4 &&
           hasLightPawnLeft &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -932,7 +947,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -956,7 +971,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -996,7 +1011,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1020,7 +1035,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1060,7 +1075,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1084,7 +1099,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1124,7 +1139,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1148,7 +1163,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1192,7 +1207,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1216,7 +1231,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1257,7 +1272,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1281,7 +1296,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1322,7 +1337,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1346,7 +1361,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1387,7 +1402,7 @@ class Game {
 
         if (
           !possibleSquare.dataset.type &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1411,7 +1426,7 @@ class Game {
         if (
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
@@ -1461,11 +1476,11 @@ class Game {
         if (
           (!possibleSquare.dataset.type ||
             possibleSquare.dataset.color !== this.currentPlayer) &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
-                destination: { row: row + offset, col: col + offset },
+                destination: { row: row + offset.row, col: col + offset.col },
               },
             ],
             color,
@@ -1476,7 +1491,7 @@ class Game {
             squareUpdates: [
               {
                 origin: { row, col },
-                destination: { row: row + offset, col: col + offset },
+                destination: { row: row + offset.row, col: col + offset.col },
               },
             ],
           });
@@ -1509,11 +1524,11 @@ class Game {
         if (
           (!possibleSquare.dataset.type ||
             possibleSquare.dataset.color !== this.currentPlayer) &&
-          !this.resultsInCheck2(
+          !this.resultsInCheck(
             [
               {
                 origin: { row, col },
-                destination: { row: row + offset, col: col + offset },
+                destination: { row: row + offset.row, col: col + offset.col },
               },
             ],
             color,
@@ -1524,14 +1539,13 @@ class Game {
             squareUpdates: [
               {
                 origin: { row, col },
-                destination: { row: row + offset, col: col + offset },
+                destination: { row: row + offset.row, col: col + offset.col },
               },
             ],
           });
         }
       });
 
-      //TODO: Use resultsInCheck2 instead of resultsInCheck
       // Castle short
       const shortRookElement = document.querySelector(
         `.Square[data-row="${row}"][data-col="7"]`,
@@ -1552,19 +1566,30 @@ class Game {
 
       if (
         !hasMoved &&
+        !this.isInCheck(color) &&
         isShortRookValid &&
         isShortClear &&
-        !this.resultsInCheck({ row, col }, { row, col: col + 1 }, color) &&
-        !this.resultsInCheck({ row, col }, { row, col: col + 2 }, color) &&
         !this.resultsInCheck(
-          {
-            row: parseInt(shortRookElement.dataset.row),
-            col: parseInt(shortRookElement.dataset.col),
-          },
-          {
-            row: parseInt(shortRookElement.dataset.row),
-            col: parseInt(shortRookElement.dataset.col) - 2,
-          },
+          [{ origin: { row, col }, destination: { row, col: col + 1 } }],
+          color,
+        ) &&
+        !this.resultsInCheck(
+          [
+            {
+              origin: { row, col },
+              destination: { row, col: 6 },
+            },
+            {
+              origin: {
+                row: parseInt(shortRookElement.dataset.row),
+                col: parseInt(shortRookElement.dataset.col),
+              },
+              destination: {
+                row: parseInt(shortRookElement.dataset.row),
+                col: parseInt(shortRookElement.dataset.col) - 2,
+              },
+            },
+          ],
           shortRookElement.dataset.color,
         )
       ) {
@@ -1614,19 +1639,35 @@ class Game {
 
       if (
         !hasMoved &&
+        !this.isInCheck(color) &&
         isLongRookValid &&
         isLongClear &&
-        !this.resultsInCheck({ row, col }, { row, col: col - 1 }, color) &&
-        !this.resultsInCheck({ row, col }, { row, col: col - 2 }, color) &&
         !this.resultsInCheck(
-          {
-            row: parseInt(longRookElement.dataset.row),
-            col: parseInt(longRookElement.dataset.col),
-          },
-          {
-            row: parseInt(longRookElement.dataset.row),
-            col: parseInt(longRookElement.dataset.col) + 3,
-          },
+          [
+            {
+              origin: { row, col },
+              destination: { row, col: col - 1 },
+            },
+          ],
+          color,
+        ) &&
+        !this.resultsInCheck(
+          [
+            {
+              origin: { row, col },
+              destination: { row, col: 2 },
+            },
+            {
+              origin: {
+                row: parseInt(longRookElement.dataset.row),
+                col: parseInt(longRookElement.dataset.col),
+              },
+              destination: {
+                row: parseInt(longRookElement.dataset.row),
+                col: parseInt(longRookElement.dataset.col) + 3,
+              },
+            },
+          ],
           longRookElement.dataset.color,
         )
       ) {
@@ -1678,25 +1719,39 @@ class Game {
       this.activeSquare &&
       clickedSquareElement !== this.activeSquare
     ) {
-      const validSquareElements = this.getValidMoves(
+      const validMoves = this.getValidMoves(
         this.activeSquare.dataset.file,
-        this.activeSquare.dataset.rank,
-      ).map((validMove) => {
+        parseInt(this.activeSquare.dataset.rank),
+      );
+
+      const validSquareElements = validMoves.map((validMove) => {
         return validMove.validSquare;
       });
 
       if (validSquareElements.includes(clickedSquareElement)) {
-        this.executeMove(
-          {
-            file: this.activeSquare.dataset.file,
-            rank: this.activeSquare.dataset.rank,
-          },
-          { file, rank },
-        );
+        const squareUpdates = validMoves.find((validMove) => {
+          return clickedSquareElement === validMove.validSquare;
+        }).squareUpdates;
+
+        if (
+          squareUpdates.find((squareUpdate) => {
+            return squareUpdate.isPromotion;
+          })
+        ) {
+          // TODO: Add promotion modal here
+        }
+
+        this.executeMove(squareUpdates);
 
         this.moves++;
 
         this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
+
+        if (this.isCheckmate(this.currentPlayer)) {
+          console.log("checkmate happened");
+        } else if (this.isInCheck(this.currentPlayer)) {
+          this.highlightCheckedKing(this.currentPlayer);
+        }
       }
 
       this.activeSquare = null;
@@ -1721,39 +1776,59 @@ class Game {
     }
   }
 
-  executeMove(origin, destination) {
-    const originSquareElement = document.querySelector(
-      `.Square[data-file="${origin.file}"][data-rank="${origin.rank}"]`,
-    );
+  executeMove(squareUpdates) {
+    squareUpdates.forEach((squareUpdate) => {
+      const originSquareElement = document.querySelector(
+        `.Square[data-row="${squareUpdate.origin.row}"][data-col="${squareUpdate.origin.col}"]`,
+      );
 
-    const destinationSquareElement = document.querySelector(
-      `.Square[data-file="${destination.file}"][data-rank="${destination.rank}"]`,
-    );
+      if (squareUpdate.destination) {
+        const destinationSquareElement = document.querySelector(
+          `.Square[data-row="${squareUpdate.destination.row}"][data-col="${squareUpdate.destination.col}"]`,
+        );
 
-    destinationSquareElement.setAttribute(
-      "data-type",
-      originSquareElement.dataset.type,
-    );
-    destinationSquareElement.setAttribute(
-      "data-color",
-      originSquareElement.dataset.color,
-    );
-    destinationSquareElement.setAttribute("data-has-moved", "true");
+        destinationSquareElement.setAttribute(
+          "data-type",
+          squareUpdate.type
+            ? squareUpdate.type
+            : originSquareElement.dataset.type,
+        );
+        destinationSquareElement.setAttribute(
+          "data-color",
+          originSquareElement.dataset.color,
+        );
+        destinationSquareElement.setAttribute("data-has-moved", "true");
+      }
 
-    originSquareElement.removeAttribute("data-type");
-    originSquareElement.removeAttribute("data-color");
-    originSquareElement.removeAttribute("data-has-moved");
+      originSquareElement.removeAttribute("data-type");
+      originSquareElement.removeAttribute("data-color");
+      originSquareElement.removeAttribute("data-has-moved");
 
-    const destinationImageElement =
-      destinationSquareElement.querySelector("img");
+      if (squareUpdate.destination === null) {
+        const originImageElement = originSquareElement.querySelector("img");
 
-    if (destinationImageElement) {
-      destinationImageElement.remove();
-    }
+        originImageElement.remove();
+      } else {
+        const destinationSquareElement = document.querySelector(
+          `.Square[data-row="${squareUpdate.destination.row}"][data-col="${squareUpdate.destination.col}"]`,
+        );
 
-    const originImageElement = originSquareElement.querySelector("img");
+        const destinationImageElement =
+          destinationSquareElement.querySelector("img");
 
-    destinationSquareElement.appendChild(originImageElement);
+        if (destinationImageElement) {
+          destinationImageElement.remove();
+        }
+
+        const originImageElement = originSquareElement.querySelector("img");
+
+        destinationSquareElement.appendChild(originImageElement);
+
+        if (squareUpdate.type) {
+          originImageElement.src = `./img/${squareUpdate.type}_${destinationSquareElement.dataset.color}.png`;
+        }
+      }
+    });
   }
 
   isInCheck(color) {
@@ -1782,92 +1857,37 @@ class Game {
     return isInCheck;
   }
 
-  resultsInCheck(origin, destination, color) {
-    const originSquareElement = document.querySelector(
-      `.Square[data-row="${origin.row}"][data-col="${origin.col}"]`,
-    );
-
-    const destinationSquareElement = document.querySelector(
-      `.Square[data-row="${destination.row}"][data-col="${destination.col}"]`,
-    );
-
-    const originalOriginDataAttributes = {
-      type: originSquareElement.dataset.type,
-      color: originSquareElement.dataset.color,
-    };
-
-    const originalDestinationDataAttributes = {
-      type: destinationSquareElement.dataset.type,
-      color: destinationSquareElement.dataset.color,
-    };
-
-    // Simulate move
-    originSquareElement.removeAttribute("data-type");
-    originSquareElement.removeAttribute("data-color");
-
-    destinationSquareElement.setAttribute(
-      "data-type",
-      originalOriginDataAttributes.type,
-    );
-    destinationSquareElement.setAttribute(
-      "data-color",
-      originalOriginDataAttributes.color,
-    );
-
-    const result = this.isInCheck(color);
-
-    // Restore origin
-    if (originalOriginDataAttributes.type) {
-      originSquareElement.setAttribute(
-        "data-type",
-        originalOriginDataAttributes.type,
-      );
-    } else {
-      originSquareElement.removeAttribute("data-type");
-    }
-
-    if (originalOriginDataAttributes.color) {
-      originSquareElement.setAttribute(
-        "data-color",
-        originalOriginDataAttributes.color,
-      );
-    } else {
-      originSquareElement.removeAttribute("data-color");
-    }
-
-    // Restore destination
-    if (originalDestinationDataAttributes.type) {
-      destinationSquareElement.setAttribute(
-        "data-type",
-        originalDestinationDataAttributes.type,
-      );
-    } else {
-      destinationSquareElement.removeAttribute("data-type");
-    }
-
-    if (originalDestinationDataAttributes.color) {
-      destinationSquareElement.setAttribute(
-        "data-color",
-        originalDestinationDataAttributes.color,
-      );
-    } else {
-      destinationSquareElement.removeAttribute("data-color");
-    }
-
-    return result;
+  isCheckmate(color) {
+    // TODO: Return boolean if provided color is currently in checkmate. (Color currenty in check and color currently no valid moves)
   }
 
-  resultsInCheck2(squareUpdates, color) {
+  isStalemate() {
+    // TODO: Return boolean if stalemate reached
+  }
+
+  highlightCheckedKing(color) {
+    this.squareElements.forEach((squareElement) => {
+      squareElement.classList.remove("Square--Checked");
+    });
+
+    const kingElement = document.querySelector(
+      `.Square[data-type="king"][data-color="${color}"]`,
+    );
+
+    kingElement?.classList.add("Square--Checked");
+  }
+
+  resultsInCheck(squareUpdates, color) {
     const originalDataAttributes = [];
 
     // Simulate move for all pieces
-    squareUpdates.forEach((squareUpdate) => {
+    squareUpdates.forEach((squareUpdate, index) => {
       const originSquareElement = document.querySelector(
         `.Square[data-row="${squareUpdate.origin.row}"][data-col="${squareUpdate.origin.col}"]`,
       );
 
       const destinationSquareElement = document.querySelector(
-        `.Square[data-row="${squareUpdate.destination.row}"][data-col="${squareUpdate.destination.col}"]`,
+        `.Square[data-row="${squareUpdate.destination?.row}"][data-col="${squareUpdate.destination?.col}"]`,
       );
 
       originalDataAttributes.push({
@@ -1876,21 +1896,21 @@ class Game {
           color: originSquareElement.dataset.color,
         },
         destination: {
-          type: destinationSquareElement.dataset.type,
-          color: destinationSquareElement.dataset.color,
+          type: destinationSquareElement?.dataset.type,
+          color: destinationSquareElement?.dataset.color,
         },
       });
 
       originSquareElement.removeAttribute("data-type");
       originSquareElement.removeAttribute("data-color");
 
-      destinationSquareElement.setAttribute(
+      destinationSquareElement?.setAttribute(
         "data-type",
-        originalOriginDataAttributes.type,
+        originalDataAttributes[index].origin.type,
       );
-      destinationSquareElement.setAttribute(
+      destinationSquareElement?.setAttribute(
         "data-color",
-        originalOriginDataAttributes.color,
+        originalDataAttributes[index].origin.color,
       );
     });
 
@@ -1904,7 +1924,7 @@ class Game {
       );
 
       const destinationSquareElement = document.querySelector(
-        `.Square[data-row="${squareUpdate.destination.row}"][data-col="${squareUpdate.destination.col}"]`,
+        `.Square[data-row="${squareUpdate.destination?.row}"][data-col="${squareUpdate.destination?.col}"]`,
       );
 
       if (originalDataAttributes[index].origin.type) {
@@ -1931,7 +1951,7 @@ class Game {
           originalDataAttributes[index].destination.type,
         );
       } else {
-        destinationSquareElement.removeAttribute("data-type");
+        destinationSquareElement?.removeAttribute("data-type");
       }
 
       if (originalDataAttributes[index].destination.color) {
@@ -1940,7 +1960,7 @@ class Game {
           originalDataAttributes[index].destination.color,
         );
       } else {
-        destinationSquareElement.removeAttribute("data-color");
+        destinationSquareElement?.removeAttribute("data-color");
       }
     });
 

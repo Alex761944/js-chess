@@ -71,6 +71,10 @@ p {
   background-color: lightblue;
 }
 
+.Square--Checked {
+  background: red;
+}
+
 .Square--Valid::after {
   content: "";
   position: absolute;
