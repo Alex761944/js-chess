@@ -105,3 +105,28 @@ p {
   object-fit: contain;
   display: block;
 }
+
+.PromotionModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+}
+
+.PromotionModal__Pieces {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  padding: 1rem;
+
+  background-color: white;
+  border-radius: 8px;
+}
+
+.PromotionModal__Piece {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

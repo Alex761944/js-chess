@@ -42,12 +42,12 @@ class Game {
 
   placePieces() {
     const pieces = [
-      {
-        color: "dark",
-        type: "rook",
-        file: "a",
-        rank: "8",
-      },
+      // {
+      //   color: "dark",
+      //   type: "rook",
+      //   file: "a",
+      //   rank: "8",
+      // },
       {
         color: "dark",
         type: "knight",
@@ -91,7 +91,7 @@ class Game {
         rank: "8",
       },
       {
-        color: "dark",
+        color: "light",
         type: "pawn",
         file: "a",
         rank: "7",
@@ -139,7 +139,7 @@ class Game {
         rank: "7",
       },
       {
-        color: "light",
+        color: "dark",
         type: "pawn",
         file: "a",
         rank: "2",
@@ -186,12 +186,12 @@ class Game {
         file: "h",
         rank: "2",
       },
-      {
-        color: "light",
-        type: "rook",
-        file: "a",
-        rank: "1",
-      },
+      // {
+      //   color: "light",
+      //   type: "rook",
+      //   file: "a",
+      //   rank: "1",
+      // },
       {
         color: "light",
         type: "knight",
@@ -1754,7 +1754,7 @@ class Game {
             return squareUpdate.isPromotion;
           })
         ) {
-          // TODO: Add promotion modal here
+          this.showPromotionModal(this.currentPlayer);
         }
 
         this.executeMove(squareUpdates);
@@ -2025,6 +2025,38 @@ class Game {
     this.squareElements.forEach((squareElement) => {
       squareElement.classList.remove("Square--Selected");
     });
+  }
+
+  createPromotionModal(color) {
+    const modalElement = document.createElement("div");
+    modalElement.classList.add("PromotionModal");
+
+    const pieceElements = document.createElement("div");
+    pieceElements.classList.add("PromotionModal__Pieces");
+
+    modalElement.appendChild(pieceElements);
+
+    document.body.append(modalElement);
+
+    const promotionPieces = ["queen", "rook", "bishop", "knight"];
+
+    promotionPieces.forEach((promotionPiece) => {
+      const pieceWrapperElement = document.createElement("div");
+      pieceWrapperElement.classList.add("PromotionModal__Piece");
+
+      const pieceElement = document.createElement("img");
+      pieceElement.classList.add("Piece");
+
+      pieceElement.src = `./img/${promotionPiece}_${color}.png`;
+      pieceElement.dataset.type = promotionPiece;
+
+      pieceWrapperElement.appendChild(pieceElement);
+      pieceElements.appendChild(pieceWrapperElement);
+    });
+  }
+
+  showPromotionModal(color) {
+    this.createPromotionModal(color);
   }
 
   get boardElement() {
