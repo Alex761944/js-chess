@@ -2036,7 +2036,7 @@ class Game {
 
     modalElement.appendChild(pieceElements);
 
-    document.body.append(modalElement);
+    document.querySelector(".Board").append(modalElement);
 
     const promotionPieces = ["queen", "rook", "bishop", "knight"];
 
@@ -2052,6 +2052,14 @@ class Game {
 
       pieceWrapperElement.appendChild(pieceElement);
       pieceElements.appendChild(pieceWrapperElement);
+
+      pieceWrapperElement.addEventListener("click", () => {
+        const selectedPiece = promotionPiece;
+
+        console.log(selectedPiece);
+
+        modalElement.remove();
+      });
     });
   }
 
