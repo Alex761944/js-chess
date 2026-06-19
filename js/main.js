@@ -740,7 +740,7 @@ class Game {
           });
         }
 
-        // Pawn-Light en passant
+        // Pawn-Light en passant (right)
         const hasDarkPawnRight = !!document.querySelector(
           `.Square[data-row="${row}"][data-col="${col + 1}"][data-type="pawn"][data-color="dark"]`,
         );
@@ -780,6 +780,7 @@ class Game {
           });
         }
 
+        // Pawn-Light en passant (left)
         const hasDarkPawnLeft = !!document.querySelector(
           `.Square[data-row="${row}"][data-col="${col - 1}"][data-type="pawn"][data-color="dark"]`,
         );
@@ -975,7 +976,6 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col - 1 },
-                isEnPassant: true,
               },
               {
                 origin: { row, col: col - 1 },
@@ -993,6 +993,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col - 1 },
+                isEnPassant: true,
               },
               {
                 origin: { row, col: col - 1 },
