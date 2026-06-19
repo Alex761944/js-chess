@@ -9,6 +9,16 @@ class Game {
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
     this.positionHistory = [];
 
+    this.sounds = {
+      move: new Audio("./sounds/move-self.mp3"),
+      capture: new Audio("./sounds/capture.mp3"),
+      castle: new Audio("./sounds/castle.mp3"),
+      check: new Audio("./sounds/move-check.mp3"),
+      promote: new Audio("./sounds/promote.mp3"),
+      gameEnd: new Audio("./sounds/game-end.mp3"),
+      draw: new Audio("./sounds/game-draw.mp3"),
+    };
+
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.resetValidSquares = this.resetValidSquares.bind(this);
 
@@ -256,6 +266,11 @@ class Game {
 
       squareElement.appendChild(pieceElement);
     });
+  }
+
+  playSound(sound) {
+    this.sounds[sound].currentTime = 0;
+    this.sounds[sound].play();
   }
 
   createPositionKey() {
@@ -1828,6 +1843,11 @@ class Game {
   }
 
   executeMove(squareUpdates) {
+    let isCapture = false;
+    let isPromotion = false;
+    // TODO: Check if king included. At the moment also en passant possible.
+    let isCastle = squareUpdates.length === 2;
+
     squareUpdates.forEach((squareUpdate) => {
       const originSquareElement = document.querySelector(
         `.Square[data-row="${squareUpdate.origin.row}"][data-col="${squareUpdate.origin.col}"]`,
@@ -1868,6 +1888,7 @@ class Game {
           destinationSquareElement.querySelector("img");
 
         if (destinationImageElement) {
+          isCapture = true;
           destinationImageElement.remove();
         }
 
@@ -1876,6 +1897,7 @@ class Game {
         destinationSquareElement.appendChild(originImageElement);
 
         if (squareUpdate.type) {
+          isPromotion = true;
           originImageElement.src = `./img/${squareUpdate.type}_${destinationSquareElement.dataset.color}.png`;
         }
       }
@@ -1891,10 +1913,19 @@ class Game {
 
     if (this.isCheckmate(this.currentPlayer)) {
       console.log("checkmate happened");
-    } else if (this.isInCheck(this.currentPlayer)) {
-      this.highlightCheckedKing(this.currentPlayer);
+      this.playSound("gameEnd");
     } else if (this.isDraw(this.currentPlayer)) {
       console.log("draw happened");
+      this.playSound("draw");
+    } else if (this.isInCheck(this.currentPlayer)) {
+      this.highlightCheckedKing(this.currentPlayer);
+      this.playSound("check");
+    } else if (isCastle) {
+      this.playSound("castle");
+    } else if (isPromotion) {
+      this.playSound("promote");
+    } else {
+      this.playSound("move");
     }
   }
 
