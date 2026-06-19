@@ -770,6 +770,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col: col + 1 },
+                isEnPassant: true,
               },
               {
                 origin: { row, col: col + 1 },
@@ -808,6 +809,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col: col - 1 },
+                isEnPassant: true,
               },
               {
                 origin: { row, col: col - 1 },
@@ -950,6 +952,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col + 1 },
+                isEnPassant: true,
               },
               {
                 origin: { row, col: col + 1 },
@@ -972,6 +975,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col - 1 },
+                isEnPassant: true,
               },
               {
                 origin: { row, col: col - 1 },
@@ -1673,6 +1677,7 @@ class Game {
             {
               origin: { row, col },
               destination: { row, col: 6 },
+              isCastle: true,
             },
             {
               origin: {
@@ -1751,6 +1756,7 @@ class Game {
             {
               origin: { row, col },
               destination: { row, col: 2 },
+              isCastle: true,
             },
             {
               origin: {
@@ -1845,8 +1851,13 @@ class Game {
   executeMove(squareUpdates) {
     let isCapture = false;
     let isPromotion = false;
-    // TODO: Check if king included. At the moment also en passant possible.
-    let isCastle = squareUpdates.length === 2;
+
+    const isCastle = squareUpdates.find((squareUpdate) => {
+      return squareUpdate.isCastle;
+    });
+    const isEnPassant = squareUpdates.find((squareUpdate) => {
+      return squareUpdate.isEnPassant;
+    });
 
     squareUpdates.forEach((squareUpdate) => {
       const originSquareElement = document.querySelector(
@@ -1909,8 +1920,6 @@ class Game {
 
     this.positionHistory.push(JSON.stringify(this.createPositionKey()));
 
-    console.log(this.positionHistory);
-
     if (this.isCheckmate(this.currentPlayer)) {
       console.log("checkmate happened");
       this.playSound("gameEnd");
@@ -1924,6 +1933,8 @@ class Game {
       this.playSound("castle");
     } else if (isPromotion) {
       this.playSound("promote");
+    } else if (isCapture || isEnPassant) {
+      this.playSound("capture");
     } else {
       this.playSound("move");
     }
@@ -1979,6 +1990,8 @@ class Game {
 
   isDraw(color) {
     // TODO: Handle all draw conditions
+    // TODO: Evaluate the kind of draw happened
+
     // Stalemate
     if (!this.isInCheck(color)) {
       const ownPieceElements = document.querySelectorAll(
