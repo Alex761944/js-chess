@@ -2,17 +2,20 @@
 class Game {
   constructor() {
     this.activeSquare = null;
+    this.intendedSquareUpdates = null;
     this.moves = 0;
     this.currentPlayer = "light";
-    this.intendedSquareUpdates = null;
 
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    this.positionHistory = [];
 
     this.handleSquareClick = this.handleSquareClick.bind(this);
     this.resetValidSquares = this.resetValidSquares.bind(this);
 
     this.createBoard();
     this.placePieces();
+
+    this.positionHistory.push(JSON.stringify(this.createPositionKey()));
   }
 
   createBoard() {
@@ -43,12 +46,12 @@ class Game {
 
   placePieces() {
     const pieces = [
-      // {
-      //   color: "dark",
-      //   type: "rook",
-      //   file: "a",
-      //   rank: "8",
-      // },
+      {
+        color: "dark",
+        type: "rook",
+        file: "a",
+        rank: "8",
+      },
       {
         color: "dark",
         type: "knight",
@@ -92,7 +95,7 @@ class Game {
         rank: "8",
       },
       {
-        color: "light",
+        color: "dark",
         type: "pawn",
         file: "a",
         rank: "7",
@@ -140,7 +143,7 @@ class Game {
         rank: "7",
       },
       {
-        color: "dark",
+        color: "light",
         type: "pawn",
         file: "a",
         rank: "2",
@@ -187,12 +190,12 @@ class Game {
         file: "h",
         rank: "2",
       },
-      // {
-      //   color: "light",
-      //   type: "rook",
-      //   file: "a",
-      //   rank: "1",
-      // },
+      {
+        color: "light",
+        type: "rook",
+        file: "a",
+        rank: "1",
+      },
       {
         color: "light",
         type: "knight",
@@ -236,18 +239,6 @@ class Game {
         rank: "1",
       },
       // Testing
-      {
-        color: "dark",
-        type: "bishop",
-        file: "b",
-        rank: "4",
-      },
-      {
-        color: "light",
-        type: "bishop",
-        file: "f",
-        rank: "5",
-      },
     ];
 
     pieces.forEach((piece) => {
@@ -265,6 +256,61 @@ class Game {
 
       squareElement.appendChild(pieceElement);
     });
+  }
+
+  createPositionKey() {
+    const pieceElements = document.querySelectorAll(".Square[data-type]");
+
+    return {
+      pieces: [...pieceElements].map((pieceElement) => {
+        return {
+          type: pieceElement.dataset.type,
+          color: pieceElement.dataset.color,
+          row: parseInt(pieceElement.dataset.row),
+          col: parseInt(pieceElement.dataset.col),
+        };
+      }),
+      currentPlayer: this.currentPlayer,
+      castlingRights: this.getCastlingRights(),
+    };
+  }
+
+  getCastlingRights() {
+    const lightKingElement = document.querySelector(
+      `.Square[data-type="king"][data-color="light"]`,
+    );
+    const darkKingElement = document.querySelector(
+      `.Square[data-type="king"][data-color="dark"]`,
+    );
+
+    const lightShortRookElement = document.querySelector(
+      `.Square[data-row="0"][data-col="7"][data-type="rook"][data-color="light"]`,
+    );
+    const lightLongRookElement = document.querySelector(
+      `.Square[data-row="0"][data-col="0"][data-type="rook"][data-color="light"]`,
+    );
+
+    const darkShortRookElement = document.querySelector(
+      `.Square[data-row="7"][data-col="7"][data-type="rook"][data-color="dark"]`,
+    );
+    const darkLongRookElement = document.querySelector(
+      `.Square[data-row="7"][data-col="0"][data-type="rook"][data-color="dark"]`,
+    );
+
+    return {
+      lightShort:
+        lightKingElement?.dataset.hasMoved === "false" &&
+        lightShortRookElement?.dataset.hasMoved === "false",
+      lightLong:
+        lightKingElement?.dataset.hasMoved === "false" &&
+        lightLongRookElement?.dataset.hasMoved === "false",
+      darkShort:
+        darkKingElement?.dataset.hasMoved === "false" &&
+        darkShortRookElement?.dataset.hasMoved === "false",
+      darkLong:
+        darkKingElement?.dataset.hasMoved === "false" &&
+        darkLongRookElement?.dataset.hasMoved === "false",
+    };
   }
 
   getSquare(file, rank) {
@@ -1839,12 +1885,16 @@ class Game {
 
     this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
 
+    this.positionHistory.push(JSON.stringify(this.createPositionKey()));
+
+    console.log(this.positionHistory);
+
     if (this.isCheckmate(this.currentPlayer)) {
       console.log("checkmate happened");
     } else if (this.isInCheck(this.currentPlayer)) {
       this.highlightCheckedKing(this.currentPlayer);
     } else if (this.isDraw(this.currentPlayer)) {
-      console.log("stalemate happened");
+      console.log("draw happened");
     }
   }
 
@@ -1947,6 +1997,15 @@ class Game {
     ) {
       return true;
     }
+
+    // Fivefold Repetition
+    const currentPositionKey = JSON.stringify(this.createPositionKey());
+
+    const repetitionCount = this.positionHistory.filter((positionKey) => {
+      return positionKey === currentPositionKey;
+    }).length;
+
+    if (repetitionCount >= 5) return true;
 
     return false;
   }
