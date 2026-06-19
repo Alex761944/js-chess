@@ -1939,26 +1939,13 @@ class Game {
       return true;
     }
 
-    // King + Bishop vs King + Bishop on same square color
+    // King + Bishop vs King + Bishop
     if (
       nonKingPieceElements.length === 2 &&
       nonKingPieceElements[0].dataset.type === "bishop" &&
       nonKingPieceElements[1].dataset.type === "bishop"
     ) {
-      const firstBishopElement = nonKingPieceElements[0];
-      const secondBishopElement = nonKingPieceElements[1];
-
-      const firstBishopSquareColor =
-        (parseInt(firstBishopElement.dataset.row) +
-          parseInt(firstBishopElement.dataset.col)) %
-        2;
-
-      const secondBishopSquareColor =
-        (parseInt(secondBishopElement.dataset.row) +
-          parseInt(secondBishopElement.dataset.col)) %
-        2;
-
-      if (firstBishopSquareColor === secondBishopSquareColor) return true;
+      return true;
     }
 
     return false;
