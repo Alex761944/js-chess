@@ -4,6 +4,7 @@ class Game {
     this.activeSquare = null;
     this.moves = 0;
     this.currentPlayer = "light";
+    this.intendedSquareUpdates = null;
 
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
@@ -583,8 +584,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col },
-                type: row === 6 ? "queen" : null,
-                isPromotion: true,
+                isPromotion: row === 6 ? true : false,
               },
             ],
           });
@@ -615,8 +615,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col: col - 1 },
-                type: row === 6 ? "queen" : null,
-                isPromotion: true,
+                isPromotion: row === 6 ? true : false,
               },
             ],
           });
@@ -647,8 +646,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 1, col: col + 1 },
-                type: row === 6 ? "queen" : null,
-                isPromotion: true,
+                isPromotion: row === 6 ? true : false,
               },
             ],
           });
@@ -787,8 +785,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col },
-                type: row === 1 ? "queen" : null,
-                isPromotion: true,
+                isPromotion: row === 1 ? true : false,
               },
             ],
           });
@@ -808,8 +805,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col - 1 },
-                type: row === 1 ? "queen" : null,
-                isPromotion: true,
+                isPromotion: row === 1 ? true : false,
               },
             ],
           });
@@ -829,8 +825,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 1, col: col + 1 },
-                type: row === 1 ? "queen" : null,
-                isPromotion: true,
+                isPromotion: row === 1 ? true : false,
               },
             ],
           });
@@ -1755,21 +1750,13 @@ class Game {
           })
         ) {
           this.showPromotionModal(this.currentPlayer);
+
+          this.intendedSquareUpdates = squareUpdates;
+
+          return;
         }
 
         this.executeMove(squareUpdates);
-
-        this.moves++;
-
-        this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
-
-        if (this.isCheckmate(this.currentPlayer)) {
-          console.log("checkmate happened");
-        } else if (this.isInCheck(this.currentPlayer)) {
-          this.highlightCheckedKing(this.currentPlayer);
-        } else if (this.isStalemate(this.currentPlayer)) {
-          console.log("stalemate happened");
-        }
       }
 
       this.activeSquare = null;
@@ -1847,6 +1834,18 @@ class Game {
         }
       }
     });
+
+    this.moves++;
+
+    this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
+
+    if (this.isCheckmate(this.currentPlayer)) {
+      console.log("checkmate happened");
+    } else if (this.isInCheck(this.currentPlayer)) {
+      this.highlightCheckedKing(this.currentPlayer);
+    } else if (this.isDraw(this.currentPlayer)) {
+      console.log("stalemate happened");
+    }
   }
 
   isInCheck(color) {
@@ -1878,39 +1877,91 @@ class Game {
   isCheckmate(color) {
     if (!this.isInCheck(color)) return false;
 
-    const ownPieces = document.querySelectorAll(
+    const ownPieceElements = document.querySelectorAll(
       `.Square[data-color="${color}"]`,
     );
 
-    for (const ownPiece of ownPieces) {
-      const validMoves = this.getValidMoves(
-        ownPiece.dataset.file,
-        parseInt(ownPiece.dataset.rank),
-      );
+    const totalMoves = [...ownPieceElements].reduce(
+      (total, ownPieceElement) => {
+        const validMoves = this.getValidMoves(
+          ownPieceElement.dataset.file,
+          parseInt(ownPieceElement.dataset.rank),
+        );
 
-      if (validMoves.length > 0) return false;
-    }
+        return total + validMoves.length;
+      },
+      0,
+    );
 
-    return true;
+    return totalMoves > 0 ? false : true;
   }
 
-  isStalemate(color) {
-    if (this.isInCheck(color)) return false;
-
-    const ownPieces = document.querySelectorAll(
-      `.Square[data-color="${color}"]`,
-    );
-
-    for (const ownPiece of ownPieces) {
-      const validMoves = this.getValidMoves(
-        ownPiece.dataset.file,
-        parseInt(ownPiece.dataset.rank),
+  isDraw(color) {
+    // TODO: Handle all draw conditions
+    // Stalemate
+    if (!this.isInCheck(color)) {
+      const ownPieceElements = document.querySelectorAll(
+        `.Square[data-color="${color}"]`,
       );
 
-      if (validMoves.length > 0) return false;
+      const totalMoves = [...ownPieceElements].reduce(
+        (total, ownPieceElement) => {
+          const validMoves = this.getValidMoves(
+            ownPieceElement.dataset.file,
+            parseInt(ownPieceElement.dataset.rank),
+          );
+
+          return total + validMoves.length;
+        },
+        0,
+      );
+
+      if (totalMoves === 0) return true;
     }
 
-    return true;
+    // Insufficient Material
+    const allPieceElements = document.querySelectorAll(".Square[data-type]");
+
+    const nonKingPieceElements = [...allPieceElements].filter(
+      (pieceElement) => {
+        return pieceElement.dataset.type !== "king";
+      },
+    );
+
+    // King vs King
+    if (nonKingPieceElements.length === 0) return true;
+
+    // King + Bishop/Knight vs King
+    if (
+      nonKingPieceElements.length === 1 &&
+      ["bishop", "knight"].includes(nonKingPieceElements[0].dataset.type)
+    ) {
+      return true;
+    }
+
+    // King + Bishop vs King + Bishop on same square color
+    if (
+      nonKingPieceElements.length === 2 &&
+      nonKingPieceElements[0].dataset.type === "bishop" &&
+      nonKingPieceElements[1].dataset.type === "bishop"
+    ) {
+      const firstBishopElement = nonKingPieceElements[0];
+      const secondBishopElement = nonKingPieceElements[1];
+
+      const firstBishopSquareColor =
+        (parseInt(firstBishopElement.dataset.row) +
+          parseInt(firstBishopElement.dataset.col)) %
+        2;
+
+      const secondBishopSquareColor =
+        (parseInt(secondBishopElement.dataset.row) +
+          parseInt(secondBishopElement.dataset.col)) %
+        2;
+
+      if (firstBishopSquareColor === secondBishopSquareColor) return true;
+    }
+
+    return false;
   }
 
   highlightCheckedKing(color) {
@@ -2041,7 +2092,7 @@ class Game {
     const promotionPieces = ["queen", "rook", "bishop", "knight"];
 
     promotionPieces.forEach((promotionPiece) => {
-      const pieceWrapperElement = document.createElement("div");
+      const pieceWrapperElement = document.createElement("button");
       pieceWrapperElement.classList.add("PromotionModal__Piece");
 
       const pieceElement = document.createElement("img");
@@ -2056,7 +2107,15 @@ class Game {
       pieceWrapperElement.addEventListener("click", () => {
         const selectedPiece = promotionPiece;
 
-        console.log(selectedPiece);
+        const pawnSquareUpdate = this.intendedSquareUpdates.find(
+          (intendedSquareUpdate) => {
+            return intendedSquareUpdate.isPromotion;
+          },
+        );
+
+        pawnSquareUpdate.type = selectedPiece;
+
+        this.executeMove(this.intendedSquareUpdates);
 
         modalElement.remove();
       });
