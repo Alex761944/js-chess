@@ -107,20 +107,16 @@ p {
   display: block;
 }
 
-.PromotionModal {
+.PromotionModal,
+.GameEndModal {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.PromotionModal__Pieces {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
 
   padding: 1rem;
 
@@ -128,8 +124,19 @@ p {
   border-radius: 8px;
 }
 
+.PromotionModal__Pieces {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .PromotionModal__Piece {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.GameEndModal__Message {
+  text-transform: capitalize;
 }

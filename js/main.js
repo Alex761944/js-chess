@@ -1,11 +1,13 @@
-// TODO: Clean Square--Checked after every move
-// TODO: Fix bug (white pawn promotion on square b8 and after that dark rook cant take the new queen)
+// TODO: Keep king highlight when game ends with checkmate
+// TODO: Check promotion modal
 class Game {
   constructor() {
     this.activeSquare = null;
     this.intendedSquareUpdates = null;
     this.moves = 0;
     this.currentPlayer = "light";
+
+    this.gameFinished = false;
 
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
     this.positionHistory = [];
@@ -21,12 +23,11 @@ class Game {
     };
 
     this.handleSquareClick = this.handleSquareClick.bind(this);
-    this.resetValidSquares = this.resetValidSquares.bind(this);
 
     this.createBoard();
     this.placePieces();
 
-    this.positionHistory.push(JSON.stringify(this.createPositionKey()));
+    this.positionHistory.push(this.createPositionKey());
   }
 
   createBoard() {
@@ -277,18 +278,21 @@ class Game {
   createPositionKey() {
     const pieceElements = document.querySelectorAll(".Square[data-type]");
 
-    return {
+    const positionObject = {
       pieces: [...pieceElements].map((pieceElement) => {
         return {
           type: pieceElement.dataset.type,
           color: pieceElement.dataset.color,
-          row: parseInt(pieceElement.dataset.row),
-          col: parseInt(pieceElement.dataset.col),
+          row: pieceElement.dataset.row,
+          col: pieceElement.dataset.col,
         };
       }),
       currentPlayer: this.currentPlayer,
       castlingRights: this.getCastlingRights(),
+      // TODO: Insert en passant rights here
     };
+
+    return JSON.stringify(positionObject);
   }
 
   getCastlingRights() {
@@ -1048,26 +1052,29 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row: row + offset, col },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row: row + offset, col },
+                },
+              ],
+            });
+          }
 
           break;
         }
@@ -1112,26 +1119,29 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row, col: col + offset },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row, col: col + offset },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row, col: col + offset },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row, col: col + offset },
+                },
+              ],
+            });
+          }
 
           break;
         }
@@ -1176,26 +1186,29 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row: row - offset, col },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row: row - offset, col },
+                },
+              ],
+            });
+          }
 
           break;
         }
@@ -1240,26 +1253,29 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row, col: col - offset },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row, col: col - offset },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row, col: col - offset },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row, col: col - offset },
+                },
+              ],
+            });
+          }
 
           break;
         }
@@ -1269,7 +1285,6 @@ class Game {
     // Bishop or Queen
     if (type === "bishop" || type === "queen") {
       // Bishop or Queen (Top-Left)
-
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
           `.Square[data-row="${row + offset}"][data-col="${col - offset}"]`,
@@ -1308,33 +1323,35 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col: col - offset },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col: col - offset },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row: row + offset, col: col - offset },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row: row + offset, col: col - offset },
+                },
+              ],
+            });
+          }
 
           break;
         }
       }
 
       // Bishop or Queen (Top-Right)
-
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
           `.Square[data-row="${row + offset}"][data-col="${col + offset}"]`,
@@ -1373,33 +1390,35 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col: col + offset },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col: col + offset },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row: row + offset, col: col + offset },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row: row + offset, col: col + offset },
+                },
+              ],
+            });
+          }
 
           break;
         }
       }
 
       // Bishop or Queen (Bottom-Left)
-
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
           `.Square[data-row="${row - offset}"][data-col="${col - offset}"]`,
@@ -1438,33 +1457,35 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col: col - offset },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col: col - offset },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row: row - offset, col: col - offset },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row: row - offset, col: col - offset },
+                },
+              ],
+            });
+          }
 
           break;
         }
       }
 
       // Bishop or Queen (Bottom-Right)
-
       for (let offset = 1; offset < 8; offset++) {
         const possibleSquare = document.querySelector(
           `.Square[data-row="${row - offset}"][data-col="${col + offset}"]`,
@@ -1503,26 +1524,29 @@ class Game {
 
         if (
           possibleSquare.dataset.type &&
-          possibleSquare.dataset.color !== this.currentPlayer &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col: col + offset },
-              },
-            ],
-            color,
-          )
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          validMoves.push({
-            validSquare: possibleSquare,
-            squareUpdates: [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col: col + offset },
-              },
-            ],
-          });
+          if (
+            !this.resultsInCheck(
+              [
+                {
+                  origin: { row, col },
+                  destination: { row: row - offset, col: col + offset },
+                },
+              ],
+              color,
+            )
+          ) {
+            validMoves.push({
+              validSquare: possibleSquare,
+              squareUpdates: [
+                {
+                  origin: { row, col },
+                  destination: { row: row - offset, col: col + offset },
+                },
+              ],
+            });
+          }
 
           break;
         }
@@ -1779,6 +1803,8 @@ class Game {
   }
 
   handleSquareClick(event) {
+    if (this.gameFinished) return;
+
     const clickedSquareElement = event.currentTarget;
 
     this.resetValidSquares();
@@ -1918,16 +1944,38 @@ class Game {
 
     this.moves++;
 
+    if (!this.isInCheck(this.currentPlayer)) {
+      this.resetCheckedSquares();
+    }
+
+    const previousPlayer = this.currentPlayer;
+
     this.currentPlayer = this.currentPlayer === "light" ? "dark" : "light";
 
-    this.positionHistory.push(JSON.stringify(this.createPositionKey()));
+    const currentPlayerIndicatorElement = document.querySelector(
+      ".CurrentPlayerIndicator p",
+    );
+
+    currentPlayerIndicatorElement.textContent = this.currentPlayer;
+
+    this.positionHistory.push(this.createPositionKey());
+
+    const drawCondition = this.getDrawCondition(this.currentPlayer);
 
     if (this.isCheckmate(this.currentPlayer)) {
-      console.log("checkmate happened");
+      this.showGameEndModal({
+        endType: "Checkmate",
+        color: previousPlayer,
+      });
       this.playSound("gameEnd");
-    } else if (this.isDraw(this.currentPlayer)) {
-      console.log("draw happened");
+      this.gameFinished = true;
+    } else if (drawCondition.isDraw) {
+      this.showGameEndModal({
+        endType: "Draw",
+        drawType: drawCondition.drawType,
+      });
       this.playSound("draw");
+      this.gameFinished = true;
     } else if (this.isInCheck(this.currentPlayer)) {
       this.highlightCheckedKing(this.currentPlayer);
       this.playSound("check");
@@ -1990,10 +2038,7 @@ class Game {
     return totalMoves > 0 ? false : true;
   }
 
-  isDraw(color) {
-    // TODO: Handle all draw conditions
-    // TODO: Evaluate the kind of draw happened
-
+  getDrawCondition(color) {
     // Stalemate
     if (!this.isInCheck(color)) {
       const ownPieceElements = document.querySelectorAll(
@@ -2012,7 +2057,11 @@ class Game {
         0,
       );
 
-      if (totalMoves === 0) return true;
+      if (totalMoves === 0)
+        return {
+          drawType: "Stalemate",
+          isDraw: true,
+        };
     }
 
     // Insufficient Material
@@ -2025,14 +2074,21 @@ class Game {
     );
 
     // King vs King
-    if (nonKingPieceElements.length === 0) return true;
+    if (nonKingPieceElements.length === 0)
+      return {
+        drawType: "Insufficient Material",
+        isDraw: true,
+      };
 
     // King + Bishop/Knight vs King
     if (
       nonKingPieceElements.length === 1 &&
       ["bishop", "knight"].includes(nonKingPieceElements[0].dataset.type)
     ) {
-      return true;
+      return {
+        drawType: "Insufficient Material",
+        isDraw: true,
+      };
     }
 
     // King + Bishop vs King + Bishop
@@ -2041,26 +2097,31 @@ class Game {
       nonKingPieceElements[0].dataset.type === "bishop" &&
       nonKingPieceElements[1].dataset.type === "bishop"
     ) {
-      return true;
+      return {
+        drawType: "Insufficient Material",
+        isDraw: true,
+      };
     }
 
     // Fivefold Repetition
-    const currentPositionKey = JSON.stringify(this.createPositionKey());
+    const currentPositionKey = this.createPositionKey();
 
     const repetitionCount = this.positionHistory.filter((positionKey) => {
       return positionKey === currentPositionKey;
     }).length;
 
-    if (repetitionCount >= 5) return true;
+    if (repetitionCount >= 5)
+      return {
+        drawType: "Fivefold Repetition",
+        isDraw: true,
+      };
 
-    return false;
+    return {
+      isDraw: false,
+    };
   }
 
   highlightCheckedKing(color) {
-    this.squareElements.forEach((squareElement) => {
-      squareElement.classList.remove("Square--Checked");
-    });
-
     const kingElement = document.querySelector(
       `.Square[data-type="king"][data-color="${color}"]`,
     );
@@ -2164,13 +2225,19 @@ class Game {
     });
   }
 
+  resetCheckedSquares() {
+    this.squareElements.forEach((squareElement) => {
+      squareElement.classList.remove("Square--Checked");
+    });
+  }
+
   resetSelectedSquares() {
     this.squareElements.forEach((squareElement) => {
       squareElement.classList.remove("Square--Selected");
     });
   }
 
-  createPromotionModal(color) {
+  showPromotionModal(color) {
     const modalElement = document.createElement("div");
     modalElement.classList.add("PromotionModal");
 
@@ -2214,8 +2281,26 @@ class Game {
     });
   }
 
-  showPromotionModal(color) {
-    this.createPromotionModal(color);
+  showGameEndModal(endCondition) {
+    const modalElement = document.createElement("div");
+    modalElement.classList.add("GameEndModal");
+
+    const gameEndMessage = document.createElement("p");
+    gameEndMessage.classList.add("GameEndModal__Message");
+
+    let textContent = "";
+
+    if (endCondition.endType === "Checkmate") {
+      textContent = `${endCondition.color} wins by ${endCondition.endType}`;
+    } else {
+      textContent = `${endCondition.endType} by ${endCondition.drawType}`;
+    }
+
+    gameEndMessage.textContent = textContent;
+
+    modalElement.appendChild(gameEndMessage);
+
+    document.querySelector(".Board").append(modalElement);
   }
 
   get boardElement() {
