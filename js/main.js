@@ -2,6 +2,7 @@ class Game {
   constructor() {
     this.activeSquare = null;
     this.intendedSquareUpdates = null;
+    this.enPassantTarget = null;
     this.moves = 0;
     this.currentPlayer = "light";
 
@@ -287,7 +288,7 @@ class Game {
       }),
       currentPlayer: this.currentPlayer,
       castlingRights: this.getCastlingRights(),
-      // TODO: Insert en passant rights here
+      enPassantTarget: this.enPassantTarget,
     };
 
     return JSON.stringify(positionObject);
@@ -738,6 +739,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row + 2, col },
+                enPassantTarget: { row: row + 1, col },
               },
             ],
           });
@@ -932,6 +934,7 @@ class Game {
               {
                 origin: { row, col },
                 destination: { row: row - 2, col },
+                enPassantTarget: { row: row - 1, col },
               },
             ],
             color,
@@ -1906,6 +1909,12 @@ class Game {
     const isEnPassant = squareUpdates.find((squareUpdate) => {
       return squareUpdate.isEnPassant;
     });
+
+    const enPassantMove = squareUpdates.find((squareUpdate) => {
+      return squareUpdate.enPassantTarget;
+    });
+
+    this.enPassantTarget = enPassantMove ? enPassantMove.enPassantTarget : null;
 
     squareUpdates.forEach((squareUpdate) => {
       const originSquareElement = document.querySelector(
