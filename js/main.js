@@ -864,7 +864,18 @@ class Game {
           `.Square[data-row="${row - 1}"][data-col="${col - 1}"][data-color="light"]`,
         );
 
-        if (hasBottomLeftOpponent) {
+        if (
+          hasBottomLeftOpponent &&
+          !this.resultsInCheck(
+            [
+              {
+                origin: { row, col },
+                destination: { row: row - 1, col: col - 1 },
+              },
+            ],
+            color,
+          )
+        ) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row - 1}"][data-col="${col - 1}"]`,
@@ -884,7 +895,18 @@ class Game {
           `.Square[data-row="${row - 1}"][data-col="${col + 1}"][data-color="light"]`,
         );
 
-        if (hasBottomRightOpponent) {
+        if (
+          hasBottomRightOpponent &&
+          !this.resultsInCheck(
+            [
+              {
+                origin: { row, col },
+                destination: { row: row - 1, col: col + 1 },
+              },
+            ],
+            color,
+          )
+        ) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row - 1}"][data-col="${col + 1}"]`,
