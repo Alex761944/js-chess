@@ -1,5 +1,4 @@
 // TODO: Keep king highlight when game ends with checkmate
-// TODO: Check promotion modal
 class Game {
   constructor() {
     this.activeSquare = null;
