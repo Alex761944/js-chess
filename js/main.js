@@ -1117,7 +1117,7 @@ class Game {
             [
               {
                 origin: { row, col },
-                destination: { row: row + offset, col },
+                destination: { row, col: col + offset },
               },
             ],
             color,
@@ -1128,7 +1128,7 @@ class Game {
             squareUpdates: [
               {
                 origin: { row, col },
-                destination: { row: row + offset, col },
+                destination: { row, col: col + offset },
               },
             ],
           });
