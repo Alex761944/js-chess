@@ -1,4 +1,3 @@
-// TODO: Keep king highlight when game ends with checkmate
 class Game {
   constructor() {
     this.activeSquare = null;
@@ -1984,6 +1983,7 @@ class Game {
     const drawCondition = this.getDrawCondition(this.currentPlayer);
 
     if (this.isCheckmate(this.currentPlayer)) {
+      this.highlightCheckedKing(this.currentPlayer);
       this.showGameEndModal({
         endType: "Checkmate",
         color: previousPlayer,
