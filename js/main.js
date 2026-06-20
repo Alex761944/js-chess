@@ -1,4 +1,5 @@
 // TODO: Clean Square--Checked after every move
+// TODO: Fix bug (white pawn promotion on square b8 and after that dark rook cant take the new queen)
 class Game {
   constructor() {
     this.activeSquare = null;
