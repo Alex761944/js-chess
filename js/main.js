@@ -630,19 +630,7 @@ class Game {
           `.Square[data-row="${row + 2}"][data-col="${col}"]`,
         );
 
-        if (
-          oneStepSquareElement &&
-          !oneStepSquareElement.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + 1, col },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (oneStepSquareElement && !oneStepSquareElement.dataset.type) {
           validMoves.push({
             validSquare: oneStepSquareElement,
             squareUpdates: [
@@ -660,18 +648,7 @@ class Game {
           `.Square[data-row="${row + 1}"][data-col="${col - 1}"][data-color="dark"]`,
         );
 
-        if (
-          hasTopLeftOpponent &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + 1, col: col - 1 },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (hasTopLeftOpponent) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row + 1}"][data-col="${col - 1}"]`,
@@ -691,18 +668,7 @@ class Game {
           `.Square[data-row="${row + 1}"][data-col="${col + 1}"][data-color="dark"]`,
         );
 
-        if (
-          hasTopRightOpponent &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + 1, col: col + 1 },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (hasTopRightOpponent) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row + 1}"][data-col="${col + 1}"]`,
@@ -722,16 +688,7 @@ class Game {
           !hasMoved &&
           twoStepSquareElement &&
           !oneStepSquareElement.dataset.type &&
-          !twoStepSquareElement.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + 2, col },
-              },
-            ],
-            color,
-          )
+          !twoStepSquareElement.dataset.type
         ) {
           validMoves.push({
             validSquare: twoStepSquareElement,
@@ -750,23 +707,7 @@ class Game {
           `.Square[data-row="${row}"][data-col="${col + 1}"][data-type="pawn"][data-color="dark"]`,
         );
 
-        if (
-          rank === 5 &&
-          hasDarkPawnRight &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + 1, col: col + 1 },
-              },
-              {
-                origin: { row, col: col + 1 },
-                destination: null,
-              },
-            ],
-            color,
-          )
-        ) {
+        if (rank === 5 && hasDarkPawnRight) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row + 1}"][data-col="${col + 1}"]`,
@@ -790,23 +731,7 @@ class Game {
           `.Square[data-row="${row}"][data-col="${col - 1}"][data-type="pawn"][data-color="dark"]`,
         );
 
-        if (
-          rank === 5 &&
-          hasDarkPawnLeft &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + 1, col: col - 1 },
-              },
-              {
-                origin: { row, col: col - 1 },
-                destination: null,
-              },
-            ],
-            color,
-          )
-        ) {
+        if (rank === 5 && hasDarkPawnLeft) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row + 1}"][data-col="${col - 1}"]`,
@@ -835,19 +760,7 @@ class Game {
           `.Square[data-row="${row - 2}"][data-col="${col}"]`,
         );
 
-        if (
-          oneStepSquareElement &&
-          !oneStepSquareElement.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - 1, col },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (oneStepSquareElement && !oneStepSquareElement.dataset.type) {
           validMoves.push({
             validSquare: oneStepSquareElement,
             squareUpdates: [
@@ -865,18 +778,7 @@ class Game {
           `.Square[data-row="${row - 1}"][data-col="${col - 1}"][data-color="light"]`,
         );
 
-        if (
-          hasBottomLeftOpponent &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - 1, col: col - 1 },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (hasBottomLeftOpponent) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row - 1}"][data-col="${col - 1}"]`,
@@ -896,18 +798,7 @@ class Game {
           `.Square[data-row="${row - 1}"][data-col="${col + 1}"][data-color="light"]`,
         );
 
-        if (
-          hasBottomRightOpponent &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - 1, col: col + 1 },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (hasBottomRightOpponent) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row - 1}"][data-col="${col + 1}"]`,
@@ -928,17 +819,7 @@ class Game {
           oneStepSquareElement &&
           !oneStepSquareElement.dataset.type &&
           twoStepSquareElement &&
-          !twoStepSquareElement.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - 2, col },
-                enPassantTarget: { row: row - 1, col },
-              },
-            ],
-            color,
-          )
+          !twoStepSquareElement.dataset.type
         ) {
           validMoves.push({
             validSquare: twoStepSquareElement,
@@ -956,23 +837,7 @@ class Game {
           `.Square[data-row="${row}"][data-col="${col + 1}"][data-type="pawn"][data-color="light"]`,
         );
 
-        if (
-          rank === 4 &&
-          hasLightPawnRight &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - 1, col: col + 1 },
-              },
-              {
-                origin: { row, col: col + 1 },
-                destination: null,
-              },
-            ],
-            color,
-          )
-        ) {
+        if (rank === 4 && hasLightPawnRight) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row - 1}"][data-col="${col + 1}"]`,
@@ -996,23 +861,7 @@ class Game {
           `.Square[data-row="${row}"][data-col="${col - 1}"][data-type="pawn"][data-color="light"]`,
         );
 
-        if (
-          rank === 4 &&
-          hasLightPawnLeft &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - 1, col: col - 1 },
-              },
-              {
-                origin: { row, col: col - 1 },
-                destination: null,
-              },
-            ],
-            color,
-          )
-        ) {
+        if (rank === 4 && hasLightPawnLeft) {
           validMoves.push({
             validSquare: document.querySelector(
               `.Square[data-row="${row - 1}"][data-col="${col - 1}"]`,
@@ -1050,18 +899,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1077,27 +915,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row: row + offset, col },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row: row + offset, col },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col },
+              },
+            ],
+          });
 
           break;
         }
@@ -1117,18 +943,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row, col: col + offset },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1144,27 +959,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row, col: col + offset },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row, col: col + offset },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row, col: col + offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1184,18 +987,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1211,27 +1003,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row: row - offset, col },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row: row - offset, col },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col },
+              },
+            ],
+          });
 
           break;
         }
@@ -1251,18 +1031,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row, col: col - offset },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1278,27 +1047,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row, col: col - offset },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row, col: col - offset },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row, col: col - offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1321,18 +1078,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col: col - offset },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1348,27 +1094,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row: row + offset, col: col - offset },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row: row + offset, col: col - offset },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col - offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1388,18 +1122,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset, col: col + offset },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1415,27 +1138,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row: row + offset, col: col + offset },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row: row + offset, col: col + offset },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row + offset, col: col + offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1455,18 +1166,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col: col - offset },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1482,27 +1182,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row: row - offset, col: col - offset },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row: row - offset, col: col - offset },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col: col - offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1522,18 +1210,7 @@ class Game {
         )
           break;
 
-        if (
-          !possibleSquare.dataset.type &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row - offset, col: col + offset },
-              },
-            ],
-            color,
-          )
-        ) {
+        if (!possibleSquare.dataset.type) {
           validMoves.push({
             validSquare: possibleSquare,
             squareUpdates: [
@@ -1549,27 +1226,15 @@ class Game {
           possibleSquare.dataset.type &&
           possibleSquare.dataset.color !== this.currentPlayer
         ) {
-          if (
-            !this.resultsInCheck(
-              [
-                {
-                  origin: { row, col },
-                  destination: { row: row - offset, col: col + offset },
-                },
-              ],
-              color,
-            )
-          ) {
-            validMoves.push({
-              validSquare: possibleSquare,
-              squareUpdates: [
-                {
-                  origin: { row, col },
-                  destination: { row: row - offset, col: col + offset },
-                },
-              ],
-            });
-          }
+          validMoves.push({
+            validSquare: possibleSquare,
+            squareUpdates: [
+              {
+                origin: { row, col },
+                destination: { row: row - offset, col: col + offset },
+              },
+            ],
+          });
 
           break;
         }
@@ -1599,17 +1264,8 @@ class Game {
         if (!possibleSquare) return;
 
         if (
-          (!possibleSquare.dataset.type ||
-            possibleSquare.dataset.color !== this.currentPlayer) &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset.row, col: col + offset.col },
-              },
-            ],
-            color,
-          )
+          !possibleSquare.dataset.type ||
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
           validMoves.push({
             validSquare: possibleSquare,
@@ -1647,17 +1303,8 @@ class Game {
         if (!possibleSquare) return;
 
         if (
-          (!possibleSquare.dataset.type ||
-            possibleSquare.dataset.color !== this.currentPlayer) &&
-          !this.resultsInCheck(
-            [
-              {
-                origin: { row, col },
-                destination: { row: row + offset.row, col: col + offset.col },
-              },
-            ],
-            color,
-          )
+          !possibleSquare.dataset.type ||
+          possibleSquare.dataset.color !== this.currentPlayer
         ) {
           validMoves.push({
             validSquare: possibleSquare,
@@ -1697,25 +1344,6 @@ class Game {
         !this.resultsInCheck(
           [{ origin: { row, col }, destination: { row, col: col + 1 } }],
           color,
-        ) &&
-        !this.resultsInCheck(
-          [
-            {
-              origin: { row, col },
-              destination: { row, col: 6 },
-            },
-            {
-              origin: {
-                row: parseInt(shortRookElement.dataset.row),
-                col: parseInt(shortRookElement.dataset.col),
-              },
-              destination: {
-                row: parseInt(shortRookElement.dataset.row),
-                col: parseInt(shortRookElement.dataset.col) - 2,
-              },
-            },
-          ],
-          shortRookElement.dataset.color,
         )
       ) {
         validMoves.push({
@@ -1776,25 +1404,6 @@ class Game {
             },
           ],
           color,
-        ) &&
-        !this.resultsInCheck(
-          [
-            {
-              origin: { row, col },
-              destination: { row, col: 2 },
-            },
-            {
-              origin: {
-                row: parseInt(longRookElement.dataset.row),
-                col: parseInt(longRookElement.dataset.col),
-              },
-              destination: {
-                row: parseInt(longRookElement.dataset.row),
-                col: parseInt(longRookElement.dataset.col) + 3,
-              },
-            },
-          ],
-          longRookElement.dataset.color,
         )
       ) {
         validMoves.push({
@@ -1822,7 +1431,11 @@ class Game {
       }
     }
 
-    return validMoves;
+    const filteredValidMoves = validMoves.filter((validMove) => {
+      return !this.resultsInCheck(validMove.squareUpdates, color);
+    });
+
+    return filteredValidMoves;
   }
 
   handleSquareClick(event) {
